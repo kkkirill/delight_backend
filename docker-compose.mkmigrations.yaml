@@ -1,0 +1,6 @@
+version: '3'
+
+services:
+  web:
+    # run wherever you want make migrations and apply them
+    command: bash -c "python manage.py makemigrations && python manage.py migrate"
