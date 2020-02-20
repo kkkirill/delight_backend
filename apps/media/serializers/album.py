@@ -12,7 +12,7 @@ from apps.media.serializers.song import SongShortInfoSerializer
 class AlbumSerializer(ModelSerializer):
     genres = GenreDetailSerializer(many=True,)
     songs = SongShortInfoSerializer(many=True,)
-    artists = ArtistShortInfoSerializer(many=True,)
+    artists = ArtistShortInfoSerializer(many=True, )
 
     class Meta:
         model = Album
