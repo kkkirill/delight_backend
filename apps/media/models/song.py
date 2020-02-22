@@ -1,5 +1,5 @@
-from django.db.models import Model, CharField, PositiveIntegerField, BooleanField, ManyToManyField, ImageField, FileField
-from apps.media.models import artist, genre
+from django.db.models import (BooleanField, CharField, FileField, ImageField,
+                              ManyToManyField, Model, PositiveIntegerField)
 from utils.utils import generate_upload_path
 
 
@@ -10,8 +10,8 @@ class Song(Model):
     file = FileField(upload_to=generate_upload_path, default=None)
     listens = PositiveIntegerField(default=0)
     explicit = BooleanField()
-    artists = ManyToManyField(artist.Artist, related_name='songs')
-    genres = ManyToManyField(genre.Genre, related_name='songs')
+    artists = ManyToManyField('Artist', related_name='songs')
+    genres = ManyToManyField('Genre', related_name='songs')
 
     def __str__(self):
         return self.title

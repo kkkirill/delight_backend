@@ -45,13 +45,13 @@ class ArtistFactory(factory.django.DjangoModelFactory):
         model = Artist
 
     @factory.post_generation
-    def genre(self, create, extracted):
+    def genres(self, create, extracted):
         if not create:
             return
 
         if extracted:
             for gn in extracted:
-                self.genre.add(gn)
+                self.genres.add(gn)
 
 
 class SongFactory(factory.django.DjangoModelFactory):
@@ -155,7 +155,7 @@ def fill(amount=50):
     # creating artists here
     genres = Genre.objects.all()
     for _ in range(amount//3):
-        ArtistFactory.create(genre=fill_with_data(genres, 1, 3))
+        ArtistFactory.create(genres=fill_with_data(genres, 1, 3))
 
     # creating songs here
     artists = Artist.objects.all()

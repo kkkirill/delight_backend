@@ -8,4 +8,4 @@ class ArtistListView(viewsets.ReadOnlyModelViewSet):
     serializer_class = ArtistSerializer
     queryset = Artist.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['genre']
+    filterset_fields = ['genres']

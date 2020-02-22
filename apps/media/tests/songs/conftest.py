@@ -1,8 +1,13 @@
 import pytest
-from apps.media.seed.factories.factories import SongFactory
-from pytest_factoryboy import register
+from apps.media.seed.factories.factories import SongFactory, ArtistFactory, GenreFactory
 
-register(SongFactory, 'song')
+
+@pytest.fixture
+def song():
+    return SongFactory.create(
+        artists=ArtistFactory.create_batch(size=2),
+        genres=GenreFactory.create_batch(size=2)
+    )
 
 
 @pytest.fixture
@@ -12,4 +17,4 @@ def song_qty():
 
 @pytest.fixture
 def songs(song_qty):
-    return SongFactory.create_batch(size=song_qty)
+    return SongFactory.create_batch(size=song_qty, explicit=False)
