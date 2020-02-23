@@ -6,7 +6,7 @@ from apps.media.serializers.song import (
     SongDetailSerializer, SongShortInfoSerializer)
 
 
-class SongListView(viewsets.ModelViewSet):
+class SongView(viewsets.ModelViewSet):
     queryset = Song.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ('genres', 'artists',)

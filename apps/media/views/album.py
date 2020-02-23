@@ -4,10 +4,10 @@ from rest_framework.filters import OrderingFilter
 
 from apps.media.models.album import Album
 from apps.media.serializers.album import (
-    AlbumSerializer, AlbumShortInfoSerializer)
+    AlbumDetailSerializer, AlbumShortInfoSerializer)
 
 
-class AlbumListView(viewsets.ModelViewSet):
+class AlbumView(viewsets.ModelViewSet):
     queryset = Album.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ('genres', 'artists')
@@ -17,4 +17,4 @@ class AlbumListView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if getattr(self, 'action', None) == 'list':
             return AlbumShortInfoSerializer
-        return AlbumSerializer
+        return AlbumDetailSerializer
