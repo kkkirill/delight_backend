@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db:
+    ports: []
+  web:
+    image: "${APP_NAME}_${APP_HASH}"
+    build:
+      context: .
+      args:
+        - TEST="true"
+    ports: []

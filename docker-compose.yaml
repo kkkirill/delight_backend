@@ -9,7 +9,7 @@ services:
   web:
     build: .
     # use `docker-compose up` via command line or via pycharm
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py fake_data && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
