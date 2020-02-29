@@ -1,5 +1,5 @@
-import pytest
 import faker
+import pytest
 
 
 @pytest.mark.django_db
@@ -27,16 +27,16 @@ class TestAlbums:
             * amount
             * data type
         """
-        result = client.get('/api/album/')
+        res = client.get('/api/album/')
 
-        assert result.status_code == 200
-        assert isinstance(result.json(), list)
-        assert len(result.json()) == album_qty
+        assert res.status_code == 200
+        assert isinstance(res.json(), list)
+        assert len(res.json()) == album_qty
 
     def test_detail_error(self, client):
         """
         test album details for non-existing album
         """
-        result = client.get(f'api/album/{faker.Faker().random_number(digits=30)}/')
+        res = client.get(f'api/album/{faker.Faker().random_number(digits=30)}/')
 
-        assert result.status_code == 404
+        assert res.status_code == 404

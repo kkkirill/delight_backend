@@ -1,4 +1,5 @@
-from django.db.models import Model, CharField, TextField, ManyToManyField, ImageField
+from django.db.models import (
+    CharField, ImageField, ManyToManyField, Model, TextField)
 
 
 class Artist(Model):

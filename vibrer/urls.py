@@ -1,5 +1,6 @@
 from django.conf.urls.static import static
 from django.urls import path, include
+
 from apps.media.routers import router
 from vibrer.settings import MEDIA_URL, MEDIA_ROOT
 

@@ -1,5 +1,6 @@
 from django.db.models import (BooleanField, CharField, FileField, ImageField,
                               ManyToManyField, Model, PositiveIntegerField)
+
 from utils.utils import generate_upload_path
 
 

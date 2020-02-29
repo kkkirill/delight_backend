@@ -1,5 +1,7 @@
 import pytest
-from apps.media.seed.factories.factories import SongFactory, ArtistFactory, GenreFactory
+
+from apps.media.seed.factories.factories import (
+    ArtistFactory, GenreFactory, SongFactory)
 
 
 @pytest.fixture
