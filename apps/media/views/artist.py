@@ -3,17 +3,23 @@ from rest_framework import viewsets
 
 from apps.media.models.artist import Artist
 from apps.media.serializers.artist import (
-    ArtistSerializer, ArtistShortInfoSerializer)
+    ArtistCUSerializer, ArtistDetailSerializer, ArtistShortInfoSerializer)
 
 
-class ArtistListView(viewsets.ModelViewSet):
-    serializer_class = ArtistSerializer
+class ArtistView(viewsets.ModelViewSet):
+    serializer_class = ArtistDetailSerializer
     queryset = Artist.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ('genres',)
-    http_method_names = ('get',)
+    http_method_names = ('get', 'post', 'put')
 
     def get_serializer_class(self):
-        if getattr(self, 'action', None) == 'list':
-            return ArtistShortInfoSerializer
-        return ArtistSerializer
+        method = getattr(self.request, 'method', None)
+        action = getattr(self, 'action', None)
+        if self.request and method == "GET":
+            if action == 'list':
+                return ArtistShortInfoSerializer
+            elif action == 'retrieve':
+                return ArtistDetailSerializer
+        elif self.request and method in ('POST', 'PUT'):
+            return ArtistCUSerializer

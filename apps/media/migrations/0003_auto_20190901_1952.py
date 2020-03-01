@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='song',
             name='file',
-            field=models.FileField(default=None, upload_to=utils.utils.generate_upload_path),
+            field=models.FileField(default=None, upload_to='media/'),
         ),
         migrations.AlterField(
             model_name='song',

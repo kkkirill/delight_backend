@@ -11,8 +11,8 @@ class Song(Model):
     file = FileField(upload_to=generate_upload_path, default=None)
     listens = PositiveIntegerField(default=0)
     explicit = BooleanField()
-    artists = ManyToManyField(artist.Artist, related_name='songs')
-    genres = ManyToManyField(genre.Genre, related_name='songs')
+    artists = ManyToManyField('Artist', related_name='songs')
+    genres = ManyToManyField('Genre', related_name='songs')
 
     def __str__(self):
         return self.title

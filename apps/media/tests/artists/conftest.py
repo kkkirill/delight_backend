@@ -11,6 +11,11 @@ def artist():
 
 
 @pytest.fixture
+def genres():
+    return GenreFactory.create_batch(size=2)
+
+
+@pytest.fixture
 def artist_qty():
     return 1
 

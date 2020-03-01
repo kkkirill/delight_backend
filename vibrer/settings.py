@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.core.validators import FileExtensionValidator
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -138,3 +140,10 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Max upload size in MB
+MAX_UPLOAD_IMAGE_SIZE = 5
+MAX_UPLOAD_SONG_SIZE = 30
+
+
+ALLOWED_SONG_EXTENSIONS = ('mp3',)
