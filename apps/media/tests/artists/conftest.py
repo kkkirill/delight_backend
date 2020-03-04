@@ -1,4 +1,5 @@
 import pytest
+
 from apps.media.seed.factories.factories import ArtistFactory, GenreFactory
 
 
@@ -8,6 +9,7 @@ def artist():
         genres=GenreFactory.create_batch(size=2)
     )
 
+
 @pytest.fixture
 def artist_qty():
     return 1
@@ -16,4 +18,3 @@ def artist_qty():
 @pytest.fixture
 def artists(artist_qty):
     return ArtistFactory.create_batch(size=artist_qty)
-

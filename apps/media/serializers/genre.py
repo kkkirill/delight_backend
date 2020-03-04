@@ -1,8 +1,9 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+
 from apps.media.models.genre import Genre
 
 
-class GenreDetailSerializer(serializers.ModelSerializer):
+class GenreDetailSerializer(ModelSerializer):
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = ('url', 'name')

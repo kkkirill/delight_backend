@@ -127,3 +127,6 @@ dmypy.json
 # Pycharm django projects
 .idea
 .pytest_cache
+
+# vscode
+.vscode

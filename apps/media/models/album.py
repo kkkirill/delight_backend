@@ -1,4 +1,6 @@
-from django.db.models import Model, CharField, PositiveSmallIntegerField, DateField, ManyToManyField, ImageField
+from django.db.models import (
+    CharField, DateField, ImageField, ManyToManyField, Model,
+    PositiveSmallIntegerField)
 
 
 class Album(Model):
