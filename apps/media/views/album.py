@@ -4,7 +4,7 @@ from rest_framework.filters import OrderingFilter
 
 from apps.media.models.album import Album
 from apps.media.serializers.album import (
-    AlbumDetailSerializer, AlbumShortInfoSerializer)
+    AlbumCUSerializer, AlbumDetailSerializer, AlbumShortInfoSerializer)
 
 
 class AlbumView(viewsets.ModelViewSet):
@@ -15,6 +15,12 @@ class AlbumView(viewsets.ModelViewSet):
     http_method_names = ('get', 'post', 'put')
 
     def get_serializer_class(self):
-        if getattr(self, 'action', None) == 'list':
-            return AlbumShortInfoSerializer
-        return AlbumDetailSerializer
+        method = getattr(self.request, 'method', None)
+        action = getattr(self, 'action', None)
+        if self.request and method == "GET":
+            if action == 'list':
+                return AlbumShortInfoSerializer
+            elif action == 'retrieve':
+                return AlbumDetailSerializer
+        elif self.request and method in ('POST', 'PUT'):
+            return AlbumCUSerializer

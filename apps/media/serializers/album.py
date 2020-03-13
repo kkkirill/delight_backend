@@ -28,7 +28,7 @@ class AlbumCUSerializer(ModelSerializer):
         pass
 
     def get_fields(self, *args, **kwargs):
-        fields = super(AlbumCUSerializer, self).get_fields(*args, **kwargs)
+        fields = super(AlbumCUSerializer, self).get_fields()
         request = self.context.get('request', None)
         if request and getattr(request, 'method', None) == "PUT":
             for field in fields.values():
@@ -40,22 +40,22 @@ class AlbumCUSerializer(ModelSerializer):
         artists_data = validated_data.pop('artists')
         songs_data = validated_data.pop('songs')
         album = Album.objects.create(**validated_data)
-        album.genres.add(*genres_data)
-        album.artists.add(*artists_data)
-        album.songs.add(*songs_data)
+        album.genres.set(genres_data)
+        album.artists.set(artists_data)
+        album.songs.set(songs_data)
         return album
 
     def update(self, instance, validated_data):
-        genres_data = validated_data.pop('genres')
-        artists_data = validated_data.pop('artists')
-        songs_data = validated_data.pop('songs')
+        genres_data = validated_data.pop('genres', None)
+        artists_data = validated_data.pop('artists', None)
+        songs_data = validated_data.pop('songs', None)
         instance = super(AlbumCUSerializer, self).update(instance,
                                                          validated_data)
         instance.save()
-        instance.genres.clear()
-        instance.artists.clear()
-        instance.songs.clear()
-        instance.genres.add(*genres_data)
-        instance.artists.add(*artists_data)
-        instance.songs.add(*songs_data)
+        if genres_data:
+            instance.genres.set(genres_data)
+        if artists_data:
+            instance.artists.set(artists_data)
+        if songs_data:
+            instance.songs.set(songs_data)
         return instance

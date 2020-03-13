@@ -14,6 +14,21 @@ def album():
 
 
 @pytest.fixture
+def genres():
+    return GenreFactory.create_batch(size=2)
+
+
+@pytest.fixture
+def songs():
+    return SongFactory.create_batch(size=4)
+
+
+@pytest.fixture
+def artists():
+    return ArtistFactory.create_batch(size=3)
+
+
+@pytest.fixture
 def album_qty():
     return 1
 

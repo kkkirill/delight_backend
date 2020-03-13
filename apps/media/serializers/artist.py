@@ -22,7 +22,7 @@ class ArtistCUSerializer(ModelSerializer):
         pass
 
     def get_fields(self, *args, **kwargs):
-        fields = super(ArtistCUSerializer, self).get_fields(*args, **kwargs)
+        fields = super(ArtistCUSerializer, self).get_fields()
         request = self.context.get('request', None)
         if request and getattr(request, 'method', None) == "PUT":
             for field in fields.values():
@@ -32,14 +32,14 @@ class ArtistCUSerializer(ModelSerializer):
     def create(self, validated_data):
         genres_data = validated_data.pop('genres')
         artist = Artist.objects.create(**validated_data)
-        artist.genres.add(*genres_data)
+        artist.genres.set(genres_data)
         return artist
 
     def update(self, instance, validated_data):
-        genres_data = validated_data.pop('genres')
+        genres_data = validated_data.pop('genres', None)
         instance = super(ArtistCUSerializer, self).update(instance,
                                                           validated_data)
         instance.save()
-        instance.genres.clear()
-        instance.genres.add(*genres_data)
+        if genres_data:
+            instance.genres.set(genres_data)
         return instance
