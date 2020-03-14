@@ -7,7 +7,7 @@ from apps.media.serializers.genre import GenreDetailSerializer
 
 class SongDetailSerializer(ModelSerializer):
     genres = GenreDetailSerializer(many=True,)
-    artists = ArtistShortInfoSerializer(many=True,)
+    artists = ArtistShortInfoSerializer(many=True, )
 
     class Meta:
         model = Song

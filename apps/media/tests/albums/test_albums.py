@@ -1,3 +1,5 @@
+import json
+
 import faker
 import pytest
 
@@ -40,3 +42,70 @@ class TestAlbums:
         res = client.get(f'api/album/{faker.Faker().random_number(digits=30)}/')
 
         assert res.status_code == 404
+
+    def test_create(self, client, genres, album, artists, songs):
+        """
+        test album create endpoint
+        """
+        title = faker.Faker().pystr(min_chars=10, max_chars=30)
+        genres = [genre.id for genre in genres]
+        artists = [artist.id for artist in artists]
+        songs = [song.id for song in songs]
+        release_year = faker.Faker().date()
+        data = {"title": title, "genres": genres, "artists": artists,
+                "songs": songs, "release_year": release_year}
+        data = json.dumps(data)
+        res = client.post(f'/api/album/', data=data,
+                         content_type="application/json")
+        album_dict = res.json()
+        assert res.status_code == 201
+        assert album_dict.get("title") == title
+        assert album_dict.get("genres") == genres
+        assert album_dict.get("artists") == artists
+        assert album_dict.get("songs") == songs
+        assert album_dict.get("release_year") == release_year
+
+    def test_update_m2m(self, client, genres, album, artists, songs):
+        """
+        test album update m2m fields:
+            *genres
+            *artists
+            *songs
+        """
+        title = faker.Faker().pystr(min_chars=10, max_chars=30)
+        genres = [genre.id for genre in genres]
+        artists = [artist.id for artist in artists]
+        songs = [song.id for song in songs]
+        data = {"title": title, "genres": genres, "artists": artists,
+                "songs": songs}
+        data = json.dumps(data)
+        res = client.put(f'/api/album/{album.id}/', data=data,
+                         content_type="application/json")
+        album_dict = res.json()
+        assert res.status_code == 200
+        assert album_dict.get("title") == title
+        assert album_dict.get("genres") == genres
+        assert album_dict.get("artists") == artists
+        assert album_dict.get("songs") == songs
+
+    def test_update_all(self, client, genres, album, artists, songs):
+        """
+        test album update fields
+        """
+        title = faker.Faker().pystr(min_chars=10, max_chars=30)
+        genres = [genre.id for genre in genres]
+        artists = [artist.id for artist in artists]
+        songs = [song.id for song in songs]
+        release_year = faker.Faker().date()
+        data = {"title": title, "genres": genres, "artists": artists,
+                "songs": songs, "release_year": release_year}
+        data = json.dumps(data)
+        res = client.put(f'/api/album/{album.id}/', data=data,
+                         content_type="application/json")
+        album_dict = res.json()
+        assert res.status_code == 200
+        assert album_dict.get("title") == title
+        assert album_dict.get("genres") == genres
+        assert album_dict.get("artists") == artists
+        assert album_dict.get("songs") == songs
+        assert album_dict.get("release_year") == release_year

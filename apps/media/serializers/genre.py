@@ -7,3 +7,6 @@ class GenreDetailSerializer(ModelSerializer):
     class Meta:
         model = Genre
         fields = ('url', 'name')
+        extra_kwargs = {
+            'name': {'validators': []},
+        }
