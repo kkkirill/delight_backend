@@ -38,9 +38,6 @@ class SongCUSerializer(ModelSerializer):
         genres_data = validated_data.pop('genres')
         artists_data = validated_data.pop('artists')
         song = Song.objects.create(**validated_data)
-        file = validated_data.get("file")
-        if file:
-            song.duration = round(MP3(file).info.length)
         song.genres.add(*genres_data)
         song.artists.add(*artists_data)
         return song
@@ -50,12 +47,9 @@ class SongCUSerializer(ModelSerializer):
         artists_data = validated_data.pop('artists', None)
         instance = super(SongCUSerializer, self).update(instance,
                                                         validated_data)
-        file = validated_data.get("file")
-        if file:
-            instance.duration = round(MP3(file).info.length)
         instance.save()
-        if artists_data:
-            instance.genres.set(genres_data)
         if genres_data:
+            instance.genres.set(genres_data)
+        if artists_data:
             instance.artists.set(artists_data)
         return instance

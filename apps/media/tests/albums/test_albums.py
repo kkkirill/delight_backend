@@ -39,7 +39,8 @@ class TestAlbums:
         """
         test album details for non-existing album
         """
-        res = client.get(f'api/album/{faker.Faker().random_number(digits=30)}/')
+        res = client.get(
+            f'api/album/{faker.Faker().random_number(digits=30)}/')
 
         assert res.status_code == 404
 
@@ -56,13 +57,13 @@ class TestAlbums:
                 "songs": songs, "release_year": release_year}
         data = json.dumps(data)
         res = client.post(f'/api/album/', data=data,
-                         content_type="application/json")
+                          content_type="application/json")
         album_dict = res.json()
         assert res.status_code == 201
         assert album_dict.get("title") == title
-        assert album_dict.get("genres") == genres
-        assert album_dict.get("artists") == artists
-        assert album_dict.get("songs") == songs
+        assert set(album_dict.get("genres")) == set(genres)
+        assert set(album_dict.get("artists")) == set(artists)
+        assert set(album_dict.get("songs")) == set(songs)
         assert album_dict.get("release_year") == release_year
 
     def test_update_m2m(self, client, genres, album, artists, songs):
@@ -84,9 +85,9 @@ class TestAlbums:
         album_dict = res.json()
         assert res.status_code == 200
         assert album_dict.get("title") == title
-        assert album_dict.get("genres") == genres
-        assert album_dict.get("artists") == artists
-        assert album_dict.get("songs") == songs
+        assert set(album_dict.get("genres")) == set(genres)
+        assert set(album_dict.get("artists")) == set(artists)
+        assert set(album_dict.get("songs")) == set(songs)
 
     def test_update_all(self, client, genres, album, artists, songs):
         """
@@ -105,7 +106,7 @@ class TestAlbums:
         album_dict = res.json()
         assert res.status_code == 200
         assert album_dict.get("title") == title
-        assert album_dict.get("genres") == genres
-        assert album_dict.get("artists") == artists
-        assert album_dict.get("songs") == songs
+        assert set(album_dict.get("genres")) == set(genres)
+        assert set(album_dict.get("artists")) == set(artists)
+        assert set(album_dict.get("songs")) == set(songs)
         assert album_dict.get("release_year") == release_year

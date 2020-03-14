@@ -19,4 +19,4 @@ def song_qty():
 
 @pytest.fixture
 def songs(song_qty):
-    return SongFactory.create_batch(size=song_qty)
+    return SongFactory.create_batch(size=song_qty, explicit=False)

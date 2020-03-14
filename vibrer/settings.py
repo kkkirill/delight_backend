@@ -129,6 +129,12 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.FileUploadParser',
     ]
 
 }
@@ -140,10 +146,3 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
-# Max upload size in MB
-MAX_UPLOAD_IMAGE_SIZE = 5
-MAX_UPLOAD_SONG_SIZE = 30
-
-
-ALLOWED_SONG_EXTENSIONS = ('mp3',)
