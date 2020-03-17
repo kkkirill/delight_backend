@@ -1,12 +1,12 @@
 from django.db.models import (
-    CharField, DateField, ImageField, ManyToManyField, Model,
-    PositiveSmallIntegerField)
+    CharField, DateField, ManyToManyField, Model,
+    PositiveSmallIntegerField, URLField)
 
 
 class Album(Model):
     title = CharField(max_length=200)
     songs_amount = PositiveSmallIntegerField(default=0)
-    photo = ImageField(default=None)
+    photo = URLField(default='image.png')
     release_year = DateField()
     artists = ManyToManyField('Artist', related_name='albums')
     genres = ManyToManyField('Genre', related_name='albums')

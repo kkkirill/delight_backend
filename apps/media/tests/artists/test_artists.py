@@ -53,7 +53,7 @@ class TestArtists:
                           content_type="application/json")
         artist_dict = res.json()
         assert res.status_code == 201
-        assert artist_dict.get("genres") == genres
+        assert set(artist_dict.get("genres")) == set(genres)
         assert artist_dict.get("stage_name") == stage_name
 
     def test_update_m2m(self, client, artist, genres):
@@ -69,7 +69,7 @@ class TestArtists:
         artist_dict = res.json()
         assert res.status_code == 200
         assert artist_dict.get("info") == info
-        assert artist_dict.get("genres") == genres
+        assert set(artist_dict.get("genres")) == set(genres)
 
     def test_update_all(self, client, artist, genres):
         """
@@ -85,5 +85,5 @@ class TestArtists:
         artist_dict = res.json()
         assert res.status_code == 200
         assert artist_dict.get("info") == info
-        assert artist_dict.get("genres") == genres
+        assert set(artist_dict.get("genres")) == set(genres)
         assert artist_dict.get("stage_name") == stage_name

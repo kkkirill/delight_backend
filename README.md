@@ -17,31 +17,46 @@ Build container:
     ```bash
     docker-compose build
     ```
-3) Run container.
+
+    Note:<br>
+    To update pip dependencies, run Django model migrations and start server execute following:
+    ```bash
+    docker-compose -f docker-compose.yaml -f docker-compose.setup.yaml up
+    ```
+    To make migrations and apply them run following:
+    ```bash
+    docker-compose -f docker-compose.yaml -f docker-compose.mkmigrations.yaml up
+    ```
+    To show running containers run following:
+    ```bash
+    docker[-compose] ps
+    ```
+    To stop running containers run following:
+    ```bash
+    docker-compose stop
+    ```
+
+3) Before run container run following:
+   <br>Install AWS CLI:
+   ```bash
+   sudo apt install awscli 
+   ```
+   <br>Create AWS bucker:
+   ```bash
+   aws --endpoint-url=http://0.0.0.0:4572 s3 mb s3://vibrer-media
+   ```
+   <br>Add bucket ACL:
+   ```bash
+   aws --endpoint-url=http://0.0.0.0:4572 s3api put-bucket-acl --bucket vibrer-media --acl public-read
+   ```
+
+4) Run container.
     ```bash
     docker-compose up
     ```
     ```bash
     docker-compose start
     ```
-
-Note:<br>
-To update pip dependencies, run Django model migrations and start server execute following:
-```bash
-docker-compose -f docker-compose.yaml -f docker-compose.setup.yaml up
-```
-To make migrations and apply them run following:
-```bash
-docker-compose -f docker-compose.yaml -f docker-compose.mkmigrations.yaml up
-```
-To show running containers run following:
-```bash
-docker[-compose] ps
-```
-To stop running containers run following:
-```bash
-docker-compose stop
-```
 
 [1]: https://docs.docker.com/install/linux/docker-ce/ubuntu/
 [2]: https://docs.docker.com/compose/install/

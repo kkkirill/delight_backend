@@ -1,3 +1,5 @@
+import json
+
 import faker
 import pytest
 
@@ -37,5 +39,86 @@ class TestSongs:
         """
         test song details for non-existing song
         """
-        res = client.get(f'/api/song/{faker.Faker().random_number(digits=30)}/')
+        res = client.get(
+            f'/api/song/{faker.Faker().random_number(digits=30)}/')
         assert res.status_code == 404
+
+    def test_create(self, client, artists, genres):
+        """
+        test song create endpoint
+        """
+        factory = faker.Faker()
+        title = factory.pystr(min_chars=5, max_chars=15)
+        explicit = factory.pybool()
+        file = factory.url(schemes=None) + factory.file_name(category='audio',
+                                                             extension='mp3')
+        image = factory.url(schemes=None) + factory.file_name(category='image',
+                                                              extension='png')
+        genres = [genre.id for genre in genres]
+        artists = [artist.id for artist in artists]
+        data = {
+            'title': title,
+            'explicit': explicit,
+            'image': image,
+            'file': file,
+            'genres': genres,
+            'artists': artists
+        }
+        data = json.dumps(data)
+        res = client.post('/api/song/', data=data,
+                          content_type='application/json')
+        song_dict = res.json()
+        assert res.status_code == 201
+        assert song_dict.get('title') == title
+        assert song_dict.get('image') == image
+        assert song_dict.get('file') == file
+        assert song_dict.get("explicit") == explicit
+        assert set(song_dict.get("genres")) == set(genres)
+        assert set(song_dict.get("artists")) == set(artists)
+
+    def test_update_m2m(self, client, song, genres):
+        """
+        test song update m2m field genres
+        """
+        title = faker.Faker().pystr(min_chars=5, max_chars=15)
+        genres = [genre.id for genre in genres]
+        data = {"genres": genres, "title": title}
+        data = json.dumps(data)
+        res = client.put(f'/api/song/{song.id}/', data=data,
+                         content_type="application/json")
+        song_dict = res.json()
+        assert res.status_code == 200
+        assert song_dict.get("title") == title
+        assert set(song_dict.get("genres")) == set(genres)
+
+    def test_update_all(self, client, song, genres, artists):
+        """
+        test artist update all fields
+        """
+        factory = faker.Faker()
+        title = factory.pystr(min_chars=5, max_chars=15)
+        explicit = factory.pybool()
+        file = factory.url(schemes=None) + factory.file_name(category='audio',
+                                                             extension='mp3')
+        image = factory.url(schemes=None) + factory.file_name(category='image',
+                                                              extension='png')
+        genres = [genre.id for genre in genres]
+        artists = [artist.id for artist in artists]
+        data = {
+            'title': title,
+            'explicit': explicit,
+            'image': image,
+            'file': file,
+            'genres': genres,
+            'artists': artists
+        }
+        res = client.put(f'/api/song/{song.id}/', data=data,
+                         content_type="application/json")
+        song_dict = res.json()
+        assert res.status_code == 200
+        assert song_dict.get("title") == title
+        assert song_dict.get("image") == image
+        assert song_dict.get("file") == file
+        assert song_dict.get("explicit") == explicit
+        assert set(song_dict.get("genres")) == set(genres)
+        assert set(song_dict.get("artists")) == set(artists)
