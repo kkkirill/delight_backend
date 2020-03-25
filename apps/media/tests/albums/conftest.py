@@ -1,6 +1,6 @@
 import pytest
 
-from apps.media.seed.factories.factories import (
+from utils.factories import (
     AlbumFactory, ArtistFactory, GenreFactory, SongFactory)
 
 
