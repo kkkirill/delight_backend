@@ -44,14 +44,14 @@ class TestAlbums:
 
         assert res.status_code == 404
 
-    def test_create(self, client, genres, album, artists, songs):
+    def test_create(self, client, genres, album, artists, songs_for_added):
         """
         test album create endpoint
         """
         title = faker.Faker().pystr(min_chars=10, max_chars=30)
         genres = [genre.id for genre in genres]
         artists = [artist.id for artist in artists]
-        songs = [song.id for song in songs]
+        songs = [song.id for song in songs_for_added]
         release_year = faker.Faker().date()
         data = {"title": title, "genres": genres, "artists": artists,
                 "songs": songs, "release_year": release_year}
@@ -66,7 +66,7 @@ class TestAlbums:
         assert set(album_dict.get("songs")) == set(songs)
         assert album_dict.get("release_year") == release_year
 
-    def test_update_m2m(self, client, genres, album, artists, songs):
+    def test_update_m2m(self, client, genres, album, artists, songs_for_added):
         """
         test album update m2m fields:
             *genres
@@ -76,7 +76,7 @@ class TestAlbums:
         title = faker.Faker().pystr(min_chars=10, max_chars=30)
         genres = [genre.id for genre in genres]
         artists = [artist.id for artist in artists]
-        songs = [song.id for song in songs]
+        songs = [song.id for song in songs_for_added]
         data = {"title": title, "genres": genres, "artists": artists,
                 "songs": songs}
         data = json.dumps(data)
@@ -89,14 +89,14 @@ class TestAlbums:
         assert set(album_dict.get("artists")) == set(artists)
         assert set(album_dict.get("songs")) == set(songs)
 
-    def test_update_all(self, client, genres, album, artists, songs):
+    def test_update_all(self, client, genres, album, artists, songs_for_added):
         """
         test album update fields
         """
         title = faker.Faker().pystr(min_chars=10, max_chars=30)
         genres = [genre.id for genre in genres]
         artists = [artist.id for artist in artists]
-        songs = [song.id for song in songs]
+        songs = [song.id for song in songs_for_added]
         release_year = faker.Faker().date()
         data = {"title": title, "genres": genres, "artists": artists,
                 "songs": songs, "release_year": release_year}

@@ -43,7 +43,7 @@ class TestSongs:
             f'/api/song/{faker.Faker().random_number(digits=30)}/')
         assert res.status_code == 404
 
-    def test_create(self, client, artists, genres):
+    def test_create(self, client, artists_for_added, genres):
         """
         test song create endpoint
         """
@@ -55,7 +55,7 @@ class TestSongs:
         image = factory.url(schemes=None) + factory.file_name(category='image',
                                                               extension='png')
         genres = [genre.id for genre in genres]
-        artists = [artist.id for artist in artists]
+        artists = [artist.id for artist in artists_for_added]
         data = {
             'title': title,
             'explicit': explicit,
@@ -91,7 +91,7 @@ class TestSongs:
         assert song_dict.get("title") == title
         assert set(song_dict.get("genres")) == set(genres)
 
-    def test_update_all(self, client, song, genres, artists):
+    def test_update_all(self, client, song, genres, artists_for_added):
         """
         test artist update all fields
         """
@@ -103,7 +103,7 @@ class TestSongs:
         image = factory.url(schemes=None) + factory.file_name(category='image',
                                                               extension='png')
         genres = [genre.id for genre in genres]
-        artists = [artist.id for artist in artists]
+        artists = [artist.id for artist in artists_for_added]
         data = {
             'title': title,
             'explicit': explicit,
