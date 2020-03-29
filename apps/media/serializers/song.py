@@ -1,4 +1,3 @@
-from mutagen.mp3 import MP3
 from rest_framework.serializers import ModelSerializer
 
 from apps.media.models.song import Song
