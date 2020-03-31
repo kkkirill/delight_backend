@@ -6,6 +6,8 @@ services:
     ports:
       - "5432:5432"
     restart: "no"
+    networks:
+      - app_net
   web:
     build: .
     env_file: .env
@@ -16,3 +18,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge
