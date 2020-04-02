@@ -16,7 +16,8 @@ class TestUpload:
         response = file_uploader.head_object(key)
         assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
-    def test_create_song_with_upload(self, client, artists, genres, keys):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_create_song_with_upload(self, client, artists, genres, keys, token, user):
         factory = faker.Faker()
         title = factory.pystr(min_chars=5, max_chars=15)
         explicit = factory.pybool()
@@ -35,7 +36,8 @@ class TestUpload:
         }
         data = json.dumps(data)
         res = client.post('/api/song/', data=data,
-                          content_type='application/json')
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         song_dict = res.json()
         assert res.status_code == 201
         assert song_dict.get('title') == title

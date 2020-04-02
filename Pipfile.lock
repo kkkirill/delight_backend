@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9b78c1eaf0d5daf08d6acf3af71a00689f205274594f6da3acf3c745076829f7"
+            "sha256": "7ce69688c0332f1ca4bfa648a048316ec284ec79de26f4d95ec566ff08721c79"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -61,6 +61,14 @@
             ],
             "index": "pypi",
             "version": "==2.2.0"
+        },
+        "django-redis": {
+            "hashes": [
+                "sha256:af0b393864e91228dd30d8c85b5c44d670b5524cb161b7f9e41acc98b6e5ace7",
+                "sha256:f46115577063d00a890867c6964ba096057f07cb756e78e0503b89cd18e4e083"
+            ],
+            "index": "pypi",
+            "version": "==4.10.0"
         },
         "django-rest-auth": {
             "hashes": [
@@ -157,9 +165,9 @@
         },
         "localstack-ext": {
             "hashes": [
-                "sha256:3e5cbe3f5bc803e88a4e7c3eadca253760cdfb52ab130aa0f471ba1129fe2509"
+                "sha256:6c8478fe2e93428dfcd5522652688b90cb129765803399a4c827a3cc1f841c7c"
             ],
-            "version": "==0.10.30"
+            "version": "==0.10.31"
         },
         "mutagen": {
             "hashes": [
@@ -281,6 +289,13 @@
             "markers": "python_version != '2.6'",
             "version": "==5.1.2"
         },
+        "redis": {
+            "hashes": [
+                "sha256:98a22fb750c9b9bb46e75e945dc3f61d0ab30d06117cbb21ff9cd1d315fedd3b",
+                "sha256:c504251769031b0dd7dd5cf786050a6050197c6de0d37778c80c08cb04ae8275"
+            ],
+            "version": "==3.3.8"
+        },
         "rsa": {
             "hashes": [
                 "sha256:25df4e10c263fb88b5ace923dd84bf9aa7f5019687b5e55382ffcdb8bede9db5",
@@ -324,11 +339,11 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:2f3eadfea5d92bc7899e75b5968410b749a054b492d5a6379c1344a1481bc2cb",
-                "sha256:9c6c593cb28f52075016307fc26b0a0f8e82bc7d1ff19aaaa959b91710a56c47"
+                "sha256:3de946ffbed6e6746608990594d08faac602528ac7015ac28d33cee6a45b7398",
+                "sha256:9a107b99a5393caf59c7aa3c1249c16e6879447533d0887f4336dde834c7be86"
             ],
             "markers": "python_version >= '3.4'",
-            "version": "==1.25.5"
+            "version": "==1.25.6"
         }
     },
     "develop": {

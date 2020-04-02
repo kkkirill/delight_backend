@@ -38,7 +38,8 @@ class TestArtists:
         res = client.get(f'/api/artist/{faker.Faker().random_number(digits=30)}/')
         assert res.status_code == 404
 
-    def test_create(self, client, genres):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_create(self, client, genres, token, user):
         """
         test artist create endpoint
         """
@@ -50,13 +51,15 @@ class TestArtists:
         }
         data = json.dumps(data)
         res = client.post('/api/artist/', data=data,
-                          content_type="application/json")
+                          content_type="application/json",
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         artist_dict = res.json()
         assert res.status_code == 201
         assert set(artist_dict.get("genres")) == set(genres)
         assert artist_dict.get("stage_name") == stage_name
 
-    def test_update_m2m(self, client, artist, genres):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_update_m2m(self, client, artist, genres, token, user):
         """
         test artist update m2m field genres
         """
@@ -65,13 +68,15 @@ class TestArtists:
         data = {"genres": genres, "info": info}
         data = json.dumps(data)
         res = client.put(f'/api/artist/{artist.id}/', data=data,
-                         content_type="application/json")
+                         content_type="application/json",
+                         **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         artist_dict = res.json()
         assert res.status_code == 200
         assert artist_dict.get("info") == info
         assert set(artist_dict.get("genres")) == set(genres)
 
-    def test_update_all(self, client, artist, genres):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_update_all(self, client, artist, genres, token, user):
         """
         test artist update all fields
         """
@@ -81,7 +86,8 @@ class TestArtists:
         data = {"stage_name": stage_name, "genres": genres, "info": info}
         data = json.dumps(data)
         res = client.put(f'/api/artist/{artist.id}/', data=data,
-                         content_type="application/json")
+                         content_type="application/json",
+                         **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         artist_dict = res.json()
         assert res.status_code == 200
         assert artist_dict.get("info") == info

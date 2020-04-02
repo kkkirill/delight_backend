@@ -43,7 +43,37 @@ class TestSongs:
             f'/api/song/{faker.Faker().random_number(digits=30)}/')
         assert res.status_code == 404
 
-    def test_create(self, client, artists_for_added, genres):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_listen(self, client, song, token, user, redis):
+        """
+        test song/:song_id/listen endpoint
+        """
+        factory = faker.Faker()
+        title = song.title
+        duration = song.duration
+
+        start_second = factory.pyint(min_value=0, max_value=duration-1)
+        end_second = factory.pyint(min_value=start_second+1,
+                                   max_value=factory.pyint(min_value=start_second+1,
+                                                           max_value=min(start_second+30, duration)))
+
+        data = {
+            'start_second': start_second,
+            'end_second': end_second
+        }
+        data = json.dumps(data)
+        res = client.post(f'/api/song/{song.id}/listen/', data=data,
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+
+        song_dict = res.json()
+        assert res.status_code == 200
+        assert song_dict.get('title') == title
+        assert song_dict.get('duration') == duration
+        assert redis.smembers(f'{user.id}-{song.id}-piece') == {f'{start_second}-{end_second}'.encode()}
+
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_create(self, client, artists_for_added, genres, token, user):
         """
         test song create endpoint
         """
@@ -66,7 +96,8 @@ class TestSongs:
         }
         data = json.dumps(data)
         res = client.post('/api/song/', data=data,
-                          content_type='application/json')
+                          content_type='application/json',
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         song_dict = res.json()
         assert res.status_code == 201
         assert song_dict.get('title') == title
@@ -76,7 +107,8 @@ class TestSongs:
         assert set(song_dict.get("genres")) == set(genres)
         assert set(song_dict.get("artists")) == set(artists)
 
-    def test_update_m2m(self, client, song, genres):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_update_m2m(self, client, song, genres, token, user):
         """
         test song update m2m field genres
         """
@@ -85,13 +117,15 @@ class TestSongs:
         data = {"genres": genres, "title": title}
         data = json.dumps(data)
         res = client.put(f'/api/song/{song.id}/', data=data,
-                         content_type="application/json")
+                         content_type="application/json",
+                         **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         song_dict = res.json()
         assert res.status_code == 200
         assert song_dict.get("title") == title
         assert set(song_dict.get("genres")) == set(genres)
 
-    def test_update_all(self, client, song, genres, artists_for_added):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_update_all(self, client, song, genres, artists_for_added, token, user):
         """
         test artist update all fields
         """
@@ -113,7 +147,8 @@ class TestSongs:
             'artists': artists
         }
         res = client.put(f'/api/song/{song.id}/', data=data,
-                         content_type="application/json")
+                         content_type="application/json",
+                         **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         song_dict = res.json()
         assert res.status_code == 200
         assert song_dict.get("title") == title

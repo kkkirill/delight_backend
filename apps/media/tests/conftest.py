@@ -1,7 +1,34 @@
 import pytest
 
+from rest_auth.app_settings import TokenSerializer, create_token
+from rest_auth.models import TokenModel
+
+from django_redis import get_redis_connection
+
 from utils.factories import (
-    AlbumFactory, ArtistFactory, GenreFactory, SongFactory)
+    SongFactory, UserFactory, GenreFactory, AlbumFactory, ArtistFactory
+)
+
+
+@pytest.fixture
+def redis():
+    yield get_redis_connection('default')
+    get_redis_connection('default').flushall()
+
+
+@pytest.fixture
+def is_staff():
+    return False
+
+
+@pytest.fixture
+def user(is_staff):
+    return UserFactory.create(is_staff=is_staff)
+
+
+@pytest.fixture
+def token(user):
+    return create_token(TokenModel, user, TokenSerializer)
 
 
 @pytest.fixture
