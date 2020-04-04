@@ -1,44 +1,6 @@
-from typing import Any
-
 import pytest
-from rest_auth.models import TokenModel
-from rest_auth.app_settings import TokenSerializer, create_token
 
-from utils.factories import (
-    ArtistFactory, GenreFactory, SongFactory, UserFactory)
 from utils.upload_file import FileUploaderS3
-
-
-@pytest.fixture
-def is_staff():
-    return False
-
-
-@pytest.fixture
-def user(is_staff):
-    return UserFactory.create(is_staff=is_staff)
-
-
-@pytest.fixture
-def token(user):
-    return create_token(TokenModel, user, TokenSerializer)
-
-
-@pytest.fixture
-def song():
-    return SongFactory.create(
-        artists=ArtistFactory.create_batch(size=2),
-        genres=GenreFactory.create_batch(size=2)
-    )
-
-@pytest.fixture
-def artists():
-    return ArtistFactory.create_batch(size=2)
-
-
-@pytest.fixture
-def genres():
-    return GenreFactory.create_batch(size=2)
 
 
 @pytest.fixture

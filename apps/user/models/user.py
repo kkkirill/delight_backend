@@ -3,8 +3,6 @@ from django.db.models import (
     BooleanField, CharField, EmailField, ImageField, IntegerField,
     ManyToManyField)
 
-from apps.media.models.song import Song
-
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, is_staff=False,
@@ -41,7 +39,6 @@ class User(AbstractBaseUser):
     photo = ImageField(default=None, upload_to='media/')
     followers = ManyToManyField('User', blank=True, related_name='users')
     followers_amount = IntegerField(default=0)
-    liked_songs = ManyToManyField(Song, related_name='users')
     is_staff = BooleanField(default=False)
 
     USERNAME_FIELD = 'username'

@@ -102,7 +102,9 @@ class TestPlaylist:
         test create songs to the playlist
         """
         songs_for_added = [song.id for song in songs_for_added]
-        data = json.dumps({"songs": songs_for_added})
+        data = json.dumps({
+            "songs": songs_for_added
+        })
         res = client.post(f'/api/user/{user.id}/playlist/{playlist.id}/song/',
                           data=data, content_type="application/json",
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})

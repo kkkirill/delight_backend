@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'apps.media',
     'apps.user',
+    'apps.likes',
     'django_filters',
     'vibrer',
     'rest_auth',

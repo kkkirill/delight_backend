@@ -39,7 +39,6 @@ class TestUser:
         assert isinstance(user_dict.get('photo'), str)
         assert isinstance(user_dict.get('followers'), list)
         assert isinstance(user_dict.get('followers_amount'), int)
-        assert isinstance(user_dict.get('liked_songs'), list)
         assert isinstance(user_dict.get('is_staff'), bool)
 
     def test_logout(self, client, user, token):

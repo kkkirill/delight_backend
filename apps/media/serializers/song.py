@@ -1,5 +1,7 @@
+from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
+from apps.likes import mixin_tools as likes_services
 from apps.media.models.song import Song
 from apps.media.serializers.artist import ArtistShortInfoSerializer
 from apps.media.serializers.genre import GenreDetailSerializer
@@ -8,12 +10,18 @@ from apps.media.serializers.genre import GenreDetailSerializer
 class SongDetailSerializer(ModelSerializer):
     genres = GenreDetailSerializer(many=True,)
     artists = ArtistShortInfoSerializer(many=True,)
+    is_fan = SerializerMethodField()
 
     class Meta:
         model = Song
         fields = ('url', 'title', 'duration', 'image', 'file',
-                  'listens', 'explicit', 'artists', 'genres')
+                  'listens', 'explicit', 'artists', 'genres',
+                  'total_likes', 'is_fan')
         read_only_fields = ('listens', 'duration')
+
+    def get_is_fan(self, obj) -> bool:
+        user = self.context.get('request').user
+        return likes_services.is_fan(obj, user)
 
 
 class SongShortInfoSerializer(SongDetailSerializer):
@@ -23,7 +31,8 @@ class SongShortInfoSerializer(SongDetailSerializer):
 
 class SongCUSerializer(ModelSerializer):
     class Meta(SongDetailSerializer.Meta):
-        pass
+        fields = ('url', 'title', 'image', 'file',
+                  'explicit', 'artists', 'genres')
 
     def get_fields(self, *args, **kwargs):
         fields = super(SongCUSerializer, self).get_fields()

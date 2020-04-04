@@ -1,28 +1,42 @@
 from rest_framework import status, viewsets
+from rest_framework.mixins import (
+    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
+from apps.likes.mixins import LikedMixin
 from apps.user.models.playlist import Playlist
-from apps.user.permissions import (
-    IsOwnerOrAdmin, IsOwnerOrAdminSong)
+from apps.user.permissions import IsOwnerOrAdmin, IsOwnerOrAdminSong
 from apps.user.serializers.playlist import (
     PlaylistCUSerializer, PlaylistSerializer, PlaylistShortInfoSerializer,
     SongsInPlaylistSerializer)
+from utils.permission_tools import ActionBasedPermission
 
 
-class PlaylistView(NestedViewSetMixin, viewsets.ModelViewSet):
+class PlaylistView(NestedViewSetMixin,
+                   LikedMixin,
+                   CreateModelMixin,
+                   RetrieveModelMixin,
+                   UpdateModelMixin,
+                   ListModelMixin,
+                   GenericViewSet):
     http_method_names = ('get', 'post', 'put')
-    permission_classes = (IsOwnerOrAdmin,)
+    permission_classes = (ActionBasedPermission,)
+    action_permissions = {
+        AllowAny: ('retrieve', 'list'),
+        IsOwnerOrAdmin: ('create', 'update'),
+        IsAuthenticatedOrReadOnly: ('like', 'fans'),
+    }
 
     def get_serializer_class(self):
-        method = getattr(self.request, 'method', None)
-        action = getattr(self, 'action', None)
-        if self.request and method == 'GET':
-            if action == 'list':
+        if self.request.method == 'GET':
+            if self.action == 'list':
                 return PlaylistShortInfoSerializer
-            elif action == 'retrieve':
+            elif self.action == 'retrieve':
                 return PlaylistSerializer
-        elif self.request and method in ('POST', 'PUT'):
+        elif self.request.method in ('POST', 'PUT'):
             return PlaylistCUSerializer
 
     def get_queryset(self):

@@ -86,17 +86,16 @@ class TestSongs:
                                                               extension='png')
         genres = [genre.id for genre in genres]
         artists = [artist.id for artist in artists_for_added]
-        data = {
+        data = json.dumps({
             'title': title,
             'explicit': explicit,
             'image': image,
             'file': file,
             'genres': genres,
             'artists': artists
-        }
-        data = json.dumps(data)
+        })
         res = client.post('/api/song/', data=data,
-                          content_type='application/json',
+                          content_type="application/json",
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         song_dict = res.json()
         assert res.status_code == 201
@@ -114,8 +113,10 @@ class TestSongs:
         """
         title = faker.Faker().pystr(min_chars=5, max_chars=15)
         genres = [genre.id for genre in genres]
-        data = {"genres": genres, "title": title}
-        data = json.dumps(data)
+        data = json.dumps({
+            "genres": genres,
+            "title": title
+        })
         res = client.put(f'/api/song/{song.id}/', data=data,
                          content_type="application/json",
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
@@ -125,7 +126,8 @@ class TestSongs:
         assert set(song_dict.get("genres")) == set(genres)
 
     @pytest.mark.parametrize('is_staff', [True])
-    def test_update_all(self, client, song, genres, artists_for_added, token, user):
+    def test_update_all(self, client, song, genres, artists_for_added, token,
+                        user):
         """
         test artist update all fields
         """
@@ -138,14 +140,14 @@ class TestSongs:
                                                               extension='png')
         genres = [genre.id for genre in genres]
         artists = [artist.id for artist in artists_for_added]
-        data = {
+        data = json.dumps({
             'title': title,
             'explicit': explicit,
             'image': image,
             'file': file,
             'genres': genres,
             'artists': artists
-        }
+        })
         res = client.put(f'/api/song/{song.id}/', data=data,
                          content_type="application/json",
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})

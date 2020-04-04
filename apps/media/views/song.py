@@ -1,37 +1,47 @@
 from django_filters.rest_framework import DjangoFilterBackend
-
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-
 from django_redis import get_redis_connection
+from rest_framework.decorators import action
+from rest_framework.mixins import (
+    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
+from rest_framework.permissions import (
+    AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly)
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.viewsets import GenericViewSet
 
+from apps.likes.mixins import LikedMixin
 from apps.media.models.song import Song
 from apps.media.serializers.song import (
     SongCUSerializer, SongDetailSerializer, SongShortInfoSerializer)
+from utils.permission_tools import ActionBasedPermission
 
 
-class SongView(ModelViewSet):
+class SongView(LikedMixin,
+               CreateModelMixin,
+               RetrieveModelMixin,
+               UpdateModelMixin,
+               ListModelMixin,
+               GenericViewSet):
     queryset = Song.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ('genres', 'artists',)
-    http_method_names = ('get', 'post', 'put')
+    http_method_names = ('get', 'post', 'put', 'delete')
+    permission_classes = (ActionBasedPermission,)
+    action_permissions = {
+        AllowAny: ('retrieve', 'list'),
+        IsAdminUser: ('create', 'update'),
+        IsAuthenticatedOrReadOnly: ('like', 'fans', 'listen'),
+    }
 
     def get_serializer_class(self):
-        method = getattr(self.request, 'method', None)
-        action = getattr(self, 'action', None)
-        if self.request and method == 'GET':
-            if action == 'list':
+        if self.request.method == 'GET':
+            if self.action == 'list':
                 return SongShortInfoSerializer
-            elif action == 'retrieve':
+            elif self.action == 'retrieve':
                 return SongDetailSerializer
-        elif self.request and method in ('POST', 'PUT'):
+        elif self.request.method in ('POST', 'PUT'):
             return SongCUSerializer
 
-    def get_permissions(self):
-        return [IsAuthenticatedOrReadOnly(), ]
 
     @action(methods=['POST'], detail=True)
     def listen(self, request, *args, **kwargs):

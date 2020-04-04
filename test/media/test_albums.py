@@ -44,20 +44,27 @@ class TestAlbums:
 
         assert res.status_code == 404
 
-    def test_create(self, client, genres, album, artists, songs_for_added):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_create(self, client, genres, album, artists_for_added, token,
+                    songs_for_added, user):
         """
         test album create endpoint
         """
         title = faker.Faker().pystr(min_chars=10, max_chars=30)
         genres = [genre.id for genre in genres]
-        artists = [artist.id for artist in artists]
+        artists = [artist.id for artist in artists_for_added]
         songs = [song.id for song in songs_for_added]
         release_year = faker.Faker().date()
-        data = {"title": title, "genres": genres, "artists": artists,
-                "songs": songs, "release_year": release_year}
-        data = json.dumps(data)
+        data = json.dumps({
+            "title": title,
+            "genres": genres,
+            "artists": artists,
+            "songs": songs,
+            "release_year": release_year
+        })
         res = client.post(f'/api/album/', data=data,
-                          content_type="application/json")
+                          content_type="application/json",
+                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         album_dict = res.json()
         assert res.status_code == 201
         assert album_dict.get("title") == title
@@ -66,7 +73,9 @@ class TestAlbums:
         assert set(album_dict.get("songs")) == set(songs)
         assert album_dict.get("release_year") == release_year
 
-    def test_update_m2m(self, client, genres, album, artists, songs_for_added):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_update_m2m(self, client, genres, album, artists_for_added, token,
+                        songs_for_added, user):
         """
         test album update m2m fields:
             *genres
@@ -75,13 +84,17 @@ class TestAlbums:
         """
         title = faker.Faker().pystr(min_chars=10, max_chars=30)
         genres = [genre.id for genre in genres]
-        artists = [artist.id for artist in artists]
+        artists = [artist.id for artist in artists_for_added]
         songs = [song.id for song in songs_for_added]
-        data = {"title": title, "genres": genres, "artists": artists,
-                "songs": songs}
-        data = json.dumps(data)
+        data = json.dumps({
+            "title": title,
+            "genres": genres,
+            "artists": artists,
+            "songs": songs
+        })
         res = client.put(f'/api/album/{album.id}/', data=data,
-                         content_type="application/json")
+                         content_type="application/json",
+                         **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         album_dict = res.json()
         assert res.status_code == 200
         assert album_dict.get("title") == title
@@ -89,7 +102,9 @@ class TestAlbums:
         assert set(album_dict.get("artists")) == set(artists)
         assert set(album_dict.get("songs")) == set(songs)
 
-    def test_update_all(self, client, genres, album, artists, songs_for_added):
+    @pytest.mark.parametrize('is_staff', [True])
+    def test_update_all(self, client, genres, album, artists, songs_for_added,
+                        token, user):
         """
         test album update fields
         """
@@ -98,11 +113,16 @@ class TestAlbums:
         artists = [artist.id for artist in artists]
         songs = [song.id for song in songs_for_added]
         release_year = faker.Faker().date()
-        data = {"title": title, "genres": genres, "artists": artists,
-                "songs": songs, "release_year": release_year}
-        data = json.dumps(data)
+        data = json.dumps({
+            "title": title,
+            "genres": genres,
+            "artists": artists,
+            "songs": songs,
+            "release_year": release_year
+        })
         res = client.put(f'/api/album/{album.id}/', data=data,
-                         content_type="application/json")
+                         content_type="application/json",
+                         **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         album_dict = res.json()
         assert res.status_code == 200
         assert album_dict.get("title") == title

@@ -17,7 +17,8 @@ class TestUpload:
         assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
     @pytest.mark.parametrize('is_staff', [True])
-    def test_create_song_with_upload(self, client, artists, genres, keys, token, user):
+    def test_create_song_with_upload(self, client, artists_for_added, genres,
+                                     keys, token, user):
         factory = faker.Faker()
         title = factory.pystr(min_chars=5, max_chars=15)
         explicit = factory.pybool()
@@ -25,7 +26,7 @@ class TestUpload:
         song_file = f'{url_prefix}{keys["fkey"]}'
         song_image = f'{url_prefix}{keys["ikey"]}'
         genre_ids = [genre.id for genre in genres]
-        artist_ids = [artist.id for artist in artists]
+        artist_ids = [artist.id for artist in artists_for_added]
         data = {
             'title': title,
             'explicit': explicit,

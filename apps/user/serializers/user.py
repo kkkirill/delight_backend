@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate, get_user_model
-from rest_framework.serializers import (CharField, ModelSerializer,
-                                        HyperlinkedRelatedField,
-                                        Serializer, ValidationError)
+from rest_framework.serializers import (
+    CharField, HyperlinkedRelatedField, ModelSerializer,
+    Serializer, ValidationError)
 
+from apps.likes.serializers.like import LikeSerializer
 
 User = get_user_model()
 
@@ -43,13 +44,13 @@ class UserLoginSerializer(Serializer):
 
 class UserSerializer(ModelSerializer):
     followers = HyperlinkedRelatedField(many=True, read_only=True, view_name='user-detail')
-    liked_songs = HyperlinkedRelatedField(many=True, read_only=True, view_name='song-detail')
     password = CharField(max_length=128, write_only=True, style={'input_type': 'password'})
+    likes = LikeSerializer(many=True,)
 
     class Meta:
         model = User
         fields = ('url', 'email', 'username', 'password', 'photo', 'followers',
-                  'followers_amount', 'liked_songs', 'is_staff')
+                  'followers_amount', 'is_staff', 'likes')
 
 
 class UserShortInfoSerializer(ModelSerializer):

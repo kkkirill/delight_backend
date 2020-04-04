@@ -39,17 +39,16 @@ class TestArtists:
         assert res.status_code == 404
 
     @pytest.mark.parametrize('is_staff', [True])
-    def test_create(self, client, genres, token, user):
+    def test_create(self, client, genres, user, token):
         """
         test artist create endpoint
         """
         stage_name = faker.Faker().name()
         genres = [genre.id for genre in genres]
-        data = {
+        data = json.dumps({
             "stage_name": stage_name,
             "genres": genres
-        }
-        data = json.dumps(data)
+        })
         res = client.post('/api/artist/', data=data,
                           content_type="application/json",
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
@@ -59,14 +58,16 @@ class TestArtists:
         assert artist_dict.get("stage_name") == stage_name
 
     @pytest.mark.parametrize('is_staff', [True])
-    def test_update_m2m(self, client, artist, genres, token, user):
+    def test_update_m2m(self, client, artist, genres, user, token):
         """
         test artist update m2m field genres
         """
         info = faker.Faker().pystr(min_chars=20, max_chars=300)
         genres = [genre.id for genre in genres]
-        data = {"genres": genres, "info": info}
-        data = json.dumps(data)
+        data = json.dumps({
+            "genres": genres,
+            "info": info
+        })
         res = client.put(f'/api/artist/{artist.id}/', data=data,
                          content_type="application/json",
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
@@ -76,15 +77,18 @@ class TestArtists:
         assert set(artist_dict.get("genres")) == set(genres)
 
     @pytest.mark.parametrize('is_staff', [True])
-    def test_update_all(self, client, artist, genres, token, user):
+    def test_update_all(self, client, artist, genres, user, token):
         """
         test artist update all fields
         """
         stage_name = faker.Faker().name()
         genres = [genre.id for genre in genres]
         info = faker.Faker().pystr(min_chars=20, max_chars=300)
-        data = {"stage_name": stage_name, "genres": genres, "info": info}
-        data = json.dumps(data)
+        data = json.dumps({
+            "stage_name": stage_name,
+            "genres": genres,
+            "info": info
+        })
         res = client.put(f'/api/artist/{artist.id}/', data=data,
                          content_type="application/json",
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
