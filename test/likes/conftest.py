@@ -1,6 +1,5 @@
 import pytest
 
-
 from utils.factories import LikedSongFactory
 
 

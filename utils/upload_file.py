@@ -6,7 +6,8 @@ import boto3
 class FileUploaderS3:
     AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    AWS_S3_ENDPOINT_URL = os.environ['AWS_S3_ENDPOINT_URL']
+    AWS_S3_ENDPOINT_URL = \
+        f'http://{os.environ["AWS_S3_HOST"]}:{os.environ["AWS_S3_PORT"]}/'
     AWS_BUCKET_NAME = os.environ['AWS_BUCKET_NAME']
 
     def __init__(self) -> None:

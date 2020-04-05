@@ -52,10 +52,12 @@ class TestSongs:
         title = song.title
         duration = song.duration
 
-        start_second = factory.pyint(min_value=0, max_value=duration-1)
-        end_second = factory.pyint(min_value=start_second+1,
-                                   max_value=factory.pyint(min_value=start_second+1,
-                                                           max_value=min(start_second+30, duration)))
+        start_second = factory.pyint(min_value=0, max_value=duration - 1)
+        end_second = factory.pyint(min_value=start_second + 1,
+                                   max_value=factory.pyint(
+                                       min_value=start_second + 1,
+                                       max_value=min(start_second + 30,
+                                                     duration)))
 
         data = {
             'start_second': start_second,
@@ -70,7 +72,9 @@ class TestSongs:
         assert res.status_code == 200
         assert song_dict.get('title') == title
         assert song_dict.get('duration') == duration
-        assert redis.smembers(f'{user.id}-{song.id}-piece') == {f'{start_second}-{end_second}'.encode()}
+        assert redis.smembers(f'{user.id}-{song.id}-piece') == {
+            f'{start_second}-{end_second}'.encode()
+        }
 
     @pytest.mark.parametrize('is_staff', [True])
     def test_create(self, client, artists_for_added, genres, token, user):

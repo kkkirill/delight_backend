@@ -29,20 +29,24 @@ ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third-party apps
+    'django_filters',
+    'rest_auth',
     'rest_framework',
     'rest_framework.authtoken',
+    # project apps
     'apps.media',
     'apps.user',
     'apps.likes',
-    'django_filters',
+    'apps.celery',
     'vibrer',
-    'rest_auth',
 ]
 
 MIDDLEWARE = [
@@ -156,10 +160,13 @@ REST_AUTH_SERIALIZERS = {
 REDIS_HOST = os.environ.get('REDIS_HOST')
 REDIS_PORT = os.environ.get('REDIS_PORT')
 
+REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
+
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+        "LOCATION": REDIS_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

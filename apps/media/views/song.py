@@ -42,7 +42,6 @@ class SongView(LikedMixin,
         elif self.request.method in ('POST', 'PUT'):
             return SongCUSerializer
 
-
     @action(methods=['POST'], detail=True)
     def listen(self, request, *args, **kwargs):
         start_second = request.data.get('start_second')
@@ -64,7 +63,9 @@ class SongView(LikedMixin,
             err_details = 'piece have to be 30 seconds or less'
 
         if err_details:
-            return Response({'Details': err_details}, status=HTTP_400_BAD_REQUEST)
+            return Response(
+                {'Details': err_details}, status=HTTP_400_BAD_REQUEST
+            )
 
         user = request.user
         con = get_redis_connection('default')

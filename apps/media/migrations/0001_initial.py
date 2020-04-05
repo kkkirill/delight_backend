@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -14,17 +13,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Album',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=200)),
                 ('songs_amount', models.PositiveSmallIntegerField(default=0)),
-                ('photo', models.ImageField(default=None, upload_to='', width_field=100)),
+                ('photo', models.ImageField(default=None, upload_to='',
+                                            width_field=100)),
                 ('release_year', models.DateField()),
             ],
         ),
         migrations.CreateModel(
             name='Artist',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('stage_name', models.CharField(max_length=200)),
                 ('info', models.TextField(blank=True)),
                 ('photo', models.ImageField(default=None, upload_to='')),
@@ -33,38 +35,52 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Genre',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('Hip - Hop', 'Hip - Hop'), ('Reggae', 'Reggae'), ('Pop', 'Pop'), ('Indie', 'Indie'), ('Rock', 'Rock'), ('Classic', 'Classic'), ('R & B', 'R & B'), ('Jazz', 'Jazz')], max_length=20, unique=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
+                ('name', models.CharField(
+                    choices=[('Hip - Hop', 'Hip - Hop'), ('Reggae', 'Reggae'),
+                             ('Pop', 'Pop'), ('Indie', 'Indie'),
+                             ('Rock', 'Rock'), ('Classic', 'Classic'),
+                             ('R & B', 'R & B'), ('Jazz', 'Jazz')],
+                    max_length=20, unique=True)),
             ],
         ),
         migrations.CreateModel(
             name='Song',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=200)),
                 ('duration', models.PositiveIntegerField()),
-                ('image', models.ImageField(default=None, upload_to='', width_field=100)),
+                ('image', models.ImageField(default=None, upload_to='',
+                                            width_field=100)),
                 ('file', models.FileField(default=None, upload_to='')),
                 ('listens', models.PositiveIntegerField(default=0)),
                 ('explicit', models.BooleanField()),
-                ('album', models.ManyToManyField(related_name='songs', to='media.Album')),
-                ('artists', models.ManyToManyField(related_name='songs', to='media.Artist')),
-                ('genres', models.ManyToManyField(related_name='songs', to='media.Genre')),
+                ('album', models.ManyToManyField(related_name='songs',
+                                                 to='media.Album')),
+                ('artists', models.ManyToManyField(related_name='songs',
+                                                   to='media.Artist')),
+                ('genres', models.ManyToManyField(related_name='songs',
+                                                  to='media.Genre')),
             ],
         ),
         migrations.AddField(
             model_name='artist',
             name='genre',
-            field=models.ManyToManyField(related_name='artists', to='media.Genre'),
+            field=models.ManyToManyField(related_name='artists',
+                                         to='media.Genre'),
         ),
         migrations.AddField(
             model_name='album',
             name='artists',
-            field=models.ManyToManyField(related_name='albums', to='media.Artist'),
+            field=models.ManyToManyField(related_name='albums',
+                                         to='media.Artist'),
         ),
         migrations.AddField(
             model_name='album',
             name='genres',
-            field=models.ManyToManyField(related_name='albums', to='media.Genre'),
+            field=models.ManyToManyField(related_name='albums',
+                                         to='media.Genre'),
         ),
     ]

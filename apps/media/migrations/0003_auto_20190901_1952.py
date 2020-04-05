@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('media', '0002_auto_20190830_1549'),
     ]
@@ -18,6 +17,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='song',
             name='image',
-            field=models.ImageField(default=None, upload_to='media/', width_field=100),
+            field=models.ImageField(default=None, upload_to='media/',
+                                    width_field=100),
         ),
     ]

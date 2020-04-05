@@ -17,13 +17,32 @@ services:
       - app_net
     volumes:
       - redis-data:/data
+  celery:
+    build: .
+    env_file: .env
+    command: celery -A apps.celery worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app_net
+  celery-beat:
+    env_file: .env
+    build: .
+    command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app_net
   web:
     build: .
     env_file: .env
-    command: bash -c "python manage.py fake_data && python manage.py runserver 0.0.0.0:8000"
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:

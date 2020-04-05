@@ -7,22 +7,21 @@ verify_ssl = true
 pytest = "==5.1.2"
 pytest-factoryboy = "==2.0.3"
 pytest-django = "==3.5.1"
+localstack = "==0.10.2.5"
+awscli = "==1.16.236"
+boto3 = "==1.9.226"
 
 [packages]
 pillow = "==6.1.0"
 Django = "==2.2.4"
 djangorestframework = "==3.10.2"
-gunicorn = "==19.9.0"
 psycopg2-binary = ">=2.7,<3.0"
 django-filter = "==2.2.0"
-mutagen = "==1.42.0"
 factory-boy = "==2.12.0"
 django-rest-auth = "==0.9.5"
 drf-extensions = "==0.5.0"
 django-redis = "==4.10.0"
-localstack = "==0.10.2.5"
-awscli = "==1.16.236"
-boto3 = "==1.9.226"
+celery = "==4.3.0"
 
 [requires]
 python_version = "3.7"

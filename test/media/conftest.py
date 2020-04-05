@@ -1,7 +1,6 @@
 import pytest
 
-from utils.factories import (
-    AlbumFactory, ArtistFactory)
+from utils.factories import AlbumFactory, ArtistFactory
 
 
 @pytest.fixture

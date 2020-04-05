@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('media', '0003_auto_20190901_1952'),
     ]
@@ -17,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='album',
             name='songs',
-            field=models.ManyToManyField(related_name='albums', to='media.Song'),
+            field=models.ManyToManyField(related_name='albums',
+                                         to='media.Song'),
         ),
         migrations.AlterField(
             model_name='album',

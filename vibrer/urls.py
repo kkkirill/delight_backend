@@ -16,8 +16,7 @@ router = ApiRouter()
 router.extend(me_router)
 router.extend(us_router)
 
-urlpatterns = [
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+urlpatterns = (
     path('api/', include(router.urls)),
     path('auth/', include(user_urls)),
-]
+)

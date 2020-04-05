@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import (
-    CASCADE, CharField, ForeignKey, Model, PositiveIntegerField)
+    CASCADE, ForeignKey, Model, PositiveIntegerField)
 
 from apps.user.models.user import User
 

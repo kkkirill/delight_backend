@@ -35,7 +35,9 @@ class TestArtists:
         """
         test artist details for non-existing artist
         """
-        res = client.get(f'/api/artist/{faker.Faker().random_number(digits=30)}/')
+        res = client.get(
+            f'/api/artist/{faker.Faker().random_number(digits=30)}/'
+        )
         assert res.status_code == 404
 
     @pytest.mark.parametrize('is_staff', [True])

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user', '0003_auto_20190912_0709'),
     ]
@@ -13,7 +12,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='last_login',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='last login'),
+            field=models.DateTimeField(blank=True, null=True,
+                                       verbose_name='last login'),
         ),
         migrations.AlterField(
             model_name='user',
@@ -33,7 +33,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='liked_songs',
-            field=models.ManyToManyField(related_name='users', to='media.Song'),
+            field=models.ManyToManyField(related_name='users',
+                                         to='media.Song'),
         ),
         migrations.AlterField(
             model_name='user',
@@ -43,7 +44,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='playlists',
-            field=models.ManyToManyField(related_name='users', to='user.Playlist'),
+            field=models.ManyToManyField(related_name='users',
+                                         to='user.Playlist'),
         ),
         migrations.AlterField(
             model_name='user',

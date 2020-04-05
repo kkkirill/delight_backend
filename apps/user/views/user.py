@@ -19,7 +19,7 @@ User = get_user_model()
 
 class UserView(ModelViewSet):
     queryset = User.objects.all()
-    http_method_names = ('get', )
+    http_method_names = ('get',)
 
     def get_serializer_class(self):
         if getattr(self, 'action', None) == 'list':
@@ -54,11 +54,12 @@ class UserLoginView(GenericAPIView):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
-        return Response({'id': user.id, 'token': token.key}, status=HTTP_200_OK)
+        return Response({'id': user.id, 'token': token.key},
+                        status=HTTP_200_OK)
 
 
 class UserLogoutView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         try:
@@ -76,7 +77,7 @@ class UserLogoutView(APIView):
 
 
 class UserGetDetailsView(RetrieveAPIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
 
     def get_object(self):
