@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # third-party apps
     'django_filters',
+    'drf_yasg',
     'rest_auth',
     'rest_framework',
     'rest_framework.authtoken',
@@ -171,6 +172,20 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
+}
+
+LOGIN_URL = '/auth/login/'
+LOGOUT_URL = '/auth/login/'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+    'VALIDATOR_URL': None,
 }
 
 STATIC_URL = '/static/'

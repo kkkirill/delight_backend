@@ -23,9 +23,6 @@ services:
     command: celery -A apps.celery worker -l info
     volumes:
       - .:/code
-    depends_on:
-      - db
-      - redis
     networks:
       - app_net
   celery-beat:
@@ -34,9 +31,6 @@ services:
     command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
     volumes:
       - .:/code
-    depends_on:
-      - db
-      - redis
     networks:
       - app_net
   web:
@@ -50,6 +44,8 @@ services:
     depends_on:
       - db
       - redis
+      - celery
+      - celery-beat
     networks:
       - app_net
 

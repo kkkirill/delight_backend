@@ -16,5 +16,9 @@ class Playlist(Model):
     owner = ForeignKey(User, related_name='playlists', on_delete=CASCADE)
     likes = GenericRelation(Like, related_query_name='playlists')
 
+    @property
+    def total_likes(self):
+        return self.likes.count()
+
     def __str__(self):
         return self.name

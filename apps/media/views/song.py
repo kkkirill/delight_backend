@@ -1,5 +1,9 @@
+from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from django_redis import get_redis_connection
+from drf_yasg.openapi import Response as SwaggerResponse
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
@@ -10,12 +14,58 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import GenericViewSet
 
 from apps.likes.mixins import LikedMixin
+from apps.likes.serializers.like import FanSerializer
 from apps.media.models.song import Song
 from apps.media.serializers.song import (
     SongCUSerializer, SongDetailSerializer, SongShortInfoSerializer)
 from utils.permission_tools import ActionBasedPermission
 
 
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_description='# Get list of all songs',
+    responses={
+        '200': SwaggerResponse(
+            'The list of songs has been retrieved successfully',
+            SongShortInfoSerializer()
+        )
+    }
+))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_description='# Get songs with the specified id',
+    responses={
+        '200': SwaggerResponse(
+            'Song has been retrieved successfully',
+            SongDetailSerializer()
+        ),
+        '404': "Song with specified id doesn't exist"
+    }
+))
+@method_decorator(name='create', decorator=swagger_auto_schema(
+    operation_description='# Create new Song',
+    responses={
+        '200': SwaggerResponse(
+            'Song has been created successfully',
+            SongCUSerializer()
+        ),
+        '400': 'Bad request',
+        '401': 'Unauthorized',
+        '403': 'Permission denied'
+    }
+))
+@method_decorator(name='update', decorator=swagger_auto_schema(
+    operation_description='# Full update of the Song'
+                          ' with the specified id',
+    responses={
+        '200': SwaggerResponse(
+            'Song with specified id has been updated successfully',
+            SongCUSerializer()
+        ),
+        '400': 'Bad request',
+        '401': 'Unauthorized',
+        '403': 'Permission denied',
+        '404': "Song with specified id doesn't exist"
+    }
+))
 class SongView(LikedMixin,
                CreateModelMixin,
                RetrieveModelMixin,
@@ -39,14 +89,18 @@ class SongView(LikedMixin,
                 return SongShortInfoSerializer
             elif self.action == 'retrieve':
                 return SongDetailSerializer
+            elif self.action == 'fans':
+                return FanSerializer
         elif self.request.method in ('POST', 'PUT'):
             return SongCUSerializer
+
+        return super().get_serializer_class()
 
     @action(methods=['POST'], detail=True)
     def listen(self, request, *args, **kwargs):
         start_second = request.data.get('start_second')
         end_second = request.data.get('end_second')
-        song = Song.objects.get(pk=kwargs['pk'])
+        song = get_object_or_404(Song, pk=kwargs['pk'])
         err_details = None
 
         if type(start_second) is not int or type(end_second) is not int:

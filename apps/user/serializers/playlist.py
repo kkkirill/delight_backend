@@ -13,7 +13,7 @@ class PlaylistSerializer(ModelSerializer):
     class Meta:
         model = Playlist
         fields = ('name', 'songs', 'songs_amount', 'is_private', 'owner',
-                  'is_fan')
+                  'is_fan', 'total_likes')
         read_only_fields = ('songs_amount',)
 
     def get_is_fan(self, obj) -> bool:

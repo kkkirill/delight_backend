@@ -164,7 +164,7 @@ class PlaylistFactory(factory.django.DjangoModelFactory):
 
 
 class LikedObjectFactory(factory.django.DjangoModelFactory):
-    user = factory.SubFactory(UserFactory)
+    # user = factory.SubFactory(UserFactory)
     object_id = factory.SelfAttribute('content_object.id')
     content_type = factory.LazyAttribute(
         lambda o: ContentType.objects.get_for_model(o.content_object))
@@ -175,28 +175,28 @@ class LikedObjectFactory(factory.django.DjangoModelFactory):
 
 
 class LikedArtistFactory(LikedObjectFactory):
-    content_object = factory.SubFactory(ArtistFactory)
+    content_object = Artist
 
     class Meta:
         model = Like
 
 
 class LikedAlbumFactory(LikedObjectFactory):
-    content_object = factory.SubFactory(AlbumFactory)
+    content_object = Album
 
     class Meta:
         model = Like
 
 
 class LikedSongFactory(LikedObjectFactory):
-    content_object = factory.SubFactory(SongFactory)
+    content_object = Song
 
     class Meta:
         model = Like
 
 
 class LikedPlaylistFactory(LikedObjectFactory):
-    content_object = factory.SubFactory(PlaylistFactory)
+    content_object = Playlist
 
     class Meta:
         model = Like

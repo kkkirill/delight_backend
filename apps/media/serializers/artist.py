@@ -12,7 +12,10 @@ class ArtistDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Artist
-        fields = ('url', 'stage_name', 'info', 'photo', 'genres', 'is_fan')
+        fields = (
+            'url', 'stage_name', 'info', 'photo', 'genres', 'is_fan',
+            'total_likes'
+        )
 
     def get_is_fan(self, obj) -> bool:
         user = self.context.get('request').user
