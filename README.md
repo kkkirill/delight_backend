@@ -1,4 +1,4 @@
-# Vibrer
+# delight
 
 ## Online audio distribution platform and music sharing website
 
@@ -10,7 +10,7 @@ Installation Docker and its dependencies:
 Build container:
 1) Enter project folder.
     ```bash
-    cd vibrer
+    cd delight
     # (you should get to the same level with Dockerfile)
     ```
 2) Build container.
@@ -43,11 +43,11 @@ Build container:
    ```
    <br>Create AWS bucker:
    ```bash
-   aws --endpoint-url=http://0.0.0.0:4572 s3 mb s3://vibrer-media
+   aws --endpoint-url=http://0.0.0.0:4572 s3 mb s3://delight-media
    ```
    <br>Add bucket ACL:
    ```bash
-   aws --endpoint-url=http://0.0.0.0:4572 s3api put-bucket-acl --bucket vibrer-media --acl public-read
+   aws --endpoint-url=http://0.0.0.0:4572 s3api put-bucket-acl --bucket delight-media --acl public-read
    ```
 
 4) Run container.

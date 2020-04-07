@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from vibrer.apps.celery.tasks import aggregate_listen_info
+from delight.apps.celery.tasks import aggregate_listen_info
 
 
 class Command(BaseCommand):

@@ -100,9 +100,12 @@ class PlaylistView(NestedViewSetMixin,
 
         user_id = self.kwargs['parent_lookup_user_playlists']
 
-        if self.request.user.id == user_id or self.request.user.is_staff:
+        if self.request.user.is_staff:
+            return Playlist.objects.all()
+        if self.request.user.id == user_id:
             return Playlist.objects.filter(owner_id=user_id)
         return Playlist.objects.filter(owner=user_id, is_private=False)
+
 
 @method_decorator(name='create', decorator=swagger_auto_schema(
     operation_description='# Create new Playlist',
@@ -136,7 +139,6 @@ class SongsInPlaylistView(NestedViewSetMixin, viewsets.ModelViewSet):
     permission_classes = (IsOwnerOrAdminSong,)
 
     def get_queryset(self):
-
         if getattr(self, 'swagger_fake_view', False):
             return Playlist.objects.none()
 

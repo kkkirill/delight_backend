@@ -133,3 +133,6 @@ dmypy.json
 
 # celery
 celeryd.pid
+.env
+.dockerignore
+.gitignore

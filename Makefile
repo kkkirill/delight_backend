@@ -1,4 +1,4 @@
-APP_NAME := vibrer
+APP_NAME := delight
 APP_HASH := $(shell git rev-parse --short HEAD)
 
 export APP_NAME

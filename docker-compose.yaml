@@ -17,22 +17,22 @@ services:
       - app_net
     volumes:
       - redis-data:/data
-  celery:
-    build: .
-    env_file: .env
-    command: celery -A apps.celery worker -l info
-    volumes:
-      - .:/code
-    networks:
-      - app_net
-  celery-beat:
-    env_file: .env
-    build: .
-    command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
-    volumes:
-      - .:/code
-    networks:
-      - app_net
+#  celery:
+#    build: .
+#    env_file: .env
+#    command: celery -A apps.celery worker -l info
+#    volumes:
+#      - .:/code
+#    networks:
+#      - app_net
+#  celery-beat:
+#    env_file: .env
+#    build: .
+#    command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
+#    volumes:
+#      - .:/code
+#    networks:
+#      - app_net
   web:
     build: .
     env_file: .env
@@ -44,8 +44,8 @@ services:
     depends_on:
       - db
       - redis
-      - celery
-      - celery-beat
+#      - celery
+#      - celery-beat
     networks:
       - app_net
 

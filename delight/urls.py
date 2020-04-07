@@ -19,7 +19,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title='Snippets API', default_version='v1',
         description='This endpoint shows the API of all RESTful endpoints in '
-                    '`vibrer` application',
+                    '`delight` application',
     ),
     public=True, permission_classes=(permissions.AllowAny, )
 )
