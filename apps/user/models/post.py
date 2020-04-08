@@ -1,19 +1,20 @@
 from django.contrib.contenttypes.fields import GenericRelation
-from django.db.models import TextField, SET_NULL, URLField, DateTimeField, ManyToManyField, Model
+from django.db.models import TextField, URLField, DateTimeField, ManyToManyField, Model, ForeignKey, CASCADE
 
-from apps.likes.models import Like, CASCADE, ForeignKey, User
 from apps.media.models import Song, Album
 from apps.user.models.playlist import Playlist
+from . import User
 
 
 class Post(Model):
     owner = ForeignKey(User, related_name='posts', on_delete=CASCADE)
     text = TextField(blank=True)
-    songs = ManyToManyField(Song, related_name='posts', on_delete=SET_NULL, blank=True)
-    playlists = ManyToManyField(Playlist, related_name='posts', on_delete=SET_NULL, blank=True)
-    albums = ForeignKey(Album, related_name='posts', on_delete=SET_NULL, blank=True)
-    pub_date = DateTimeField()
-    likes = GenericRelation(Like, related_query_name='posts')
+    songs = ManyToManyField(Song, related_name='posts', blank=True)
+    playlists = ManyToManyField(Playlist, related_name='posts', blank=True)
+    albums = ManyToManyField(Album, related_name='posts', blank=True)
+    pub_date = DateTimeField(auto_now_add=True)
+    likes = GenericRelation('likes.Like', related_query_name='posts')
+
 
     @property
     def total_likes(self):
@@ -23,6 +24,6 @@ class Post(Model):
         return f'{self.pub_date};{self.owner}'
 
 
-class Image:
+class Image(Model):
     image = URLField()
-    post = ForeignKey(Post, related_name='images', on_delete=CASCADE)
+    post = ForeignKey(Post, related_name='images', on_delete=CASCADE, blank=True, null=True)

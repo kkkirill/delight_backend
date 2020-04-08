@@ -31,3 +31,15 @@ def get_fans(obj):
     obj_type = ContentType.objects.get_for_model(obj)
     return User.objects.filter(
         likes__content_type=obj_type, likes__object_id=obj.id)
+
+
+def add_follower(obj, user):
+    obj.followers.add(user)
+    obj.followers_amount += 1
+    obj.save()
+
+
+def remove_follower(obj, user):
+    obj.followers.remove(user)
+    obj.followers_amount -= 1
+    obj.save()

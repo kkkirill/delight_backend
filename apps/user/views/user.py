@@ -3,21 +3,26 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import logout as django_logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.models import Token
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import GenericAPIView, RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
-from drf_yasg.openapi import Response as SwaggerResponse
 from rest_framework.status import (
     HTTP_200_OK, HTTP_201_CREATED, HTTP_401_UNAUTHORIZED
 )
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from apps.likes.mixins import LikedMixin
+from apps.likes.serializers.like import FanSerializer
 from apps.user.serializers.user import (
     UserLoginSerializer, UserRegistrationSerializer, UserSerializer,
     UserShortInfoSerializer)
+from utils.permission_tools import ActionBasedPermission
 
 User = get_user_model()
 
@@ -41,13 +46,26 @@ User = get_user_model()
         '404': "User with this specific id doesn't exist"
     }
 ))
-class UserView(ModelViewSet):
+class UserView(LikedMixin, ModelViewSet):
     queryset = User.objects.all()
-    http_method_names = ('get',)
+    http_method_names = ('get', 'post', 'delete')
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
+    filterset_fields = ('username', 'email', 'is_staff', 'followers_amount',)
+    ordering_fields = '__all__'
+    ordering = ('username',)
+    search_fields = ('id',)  # TODO SearchFilter fields
+
+    permission_classes = (ActionBasedPermission,)
+    action_permissions = {
+        AllowAny: ('retrieve', 'list'),
+        IsAuthenticatedOrReadOnly: ('like', 'fans'),
+    }
 
     def get_serializer_class(self):
-        if getattr(self, 'action', None) == 'list':
+        if self.action == 'list':
             return UserShortInfoSerializer
+        elif self.action == 'fans':
+            return FanSerializer
 
         return UserSerializer
 

@@ -2,6 +2,7 @@ from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import (
@@ -68,8 +69,11 @@ class ArtistView(LikedMixin,
                  ListModelMixin,
                  GenericViewSet):
     queryset = Artist.objects.all()
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ('genres',)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
+    filterset_fields = '__all__'
+    ordering_fields = '__all__'
+    search_fields = ('id',)  # TODO SearchFilter fields
+    ordering = ('stage_name',)
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {

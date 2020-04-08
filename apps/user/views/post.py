@@ -1,3 +1,6 @@
+from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, ListModelMixin
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
@@ -7,7 +10,7 @@ from apps.likes.mixins import LikedMixin
 from apps.likes.serializers.like import FanSerializer
 from apps.user.models.post import Post
 from apps.user.permissions import IsOwnerOrAdmin
-from apps.user.serializers.post import PostSerializer, PostCUSerializer
+from apps.user.serializers.post import PostSerializer, PostCUSerializer, PostShortInfoSerializer
 from utils.permission_tools import ActionBasedPermission
 
 
@@ -25,6 +28,11 @@ class PostView(NestedViewSetMixin,
         IsOwnerOrAdmin: ('create', 'update'),
         IsAuthenticatedOrReadOnly: ('like', 'fans'),
     }
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
+    filterset_fields = '__all__'
+    ordering_fields = '__all__'
+    ordering = ('pub_date',)
+    search_fields = ('id',)  # TODO SearchFilter fields
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -44,12 +52,15 @@ class PostView(NestedViewSetMixin,
         if getattr(self, 'swagger_fake_view', False):
             return Post.objects.none()
 
-        user_id = self.kwargs['parent_lookup_user_playlists']  # TODO lookup
-
         if self.request.user.is_staff:
             return Post.objects.all()
 
-        return Playlist.objects.filter(owner=user_id, is_private=False)
+        # TODO user post POST, DELETE, LIKE, UNLINE
+        
+        user_id = self.kwargs['parent_lookup_user_posts']  # TODO lookup
+        # ids = [User.objects.filter(following=user_id).values_list('id', flat=True), user_id]
+        # Post.objects.filter(owner__following__)
+        return Post.objects.filter(Q(owner__following__followers__exact=user_id) & Q(owner=user_id))
 
 # class SongsInPlaylistView(NestedViewSetMixin, viewsets.ModelViewSet):
 #     http_method_names = ('post', 'delete',)

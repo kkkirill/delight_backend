@@ -3,9 +3,8 @@ from django.db.models import (
     CASCADE, BooleanField, CharField, ForeignKey, ManyToManyField, Model,
     PositiveSmallIntegerField)
 
-from apps.likes.models.like import Like
-from apps.media.models.song import Song
 from apps.user.models.user import User
+from apps.media.models.song import Song
 
 
 class Playlist(Model):
@@ -14,7 +13,7 @@ class Playlist(Model):
     songs_amount = PositiveSmallIntegerField(default=0)
     is_private = BooleanField(default=False)
     owner = ForeignKey(User, related_name='playlists', on_delete=CASCADE)
-    likes = GenericRelation(Like, related_query_name='playlists')
+    likes = GenericRelation('likes.Like', related_query_name='playlists')
 
     @property
     def total_likes(self):

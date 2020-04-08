@@ -23,7 +23,7 @@ class PlaylistSerializer(ModelSerializer):
 
 class PlaylistShortInfoSerializer(ModelSerializer):
     class Meta(PlaylistSerializer.Meta):
-        fields = ('name', 'id',)
+        fields = ('id', 'name',)
 
 
 class PlaylistCUSerializer(ModelSerializer):

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
 from django_redis import get_redis_connection
 from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
@@ -73,8 +74,11 @@ class SongView(LikedMixin,
                ListModelMixin,
                GenericViewSet):
     queryset = Song.objects.all()
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ('genres', 'artists',)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
+    filterset_fields = '__all__'
+    ordering_fields = '__all__'
+    search_fields = ('id',)  # TODO SearchFilter fields
+    ordering = ('title',)
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {

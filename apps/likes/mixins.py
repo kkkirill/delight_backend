@@ -7,6 +7,7 @@ from drf_yasg.openapi import Response as SwaggerResponse
 
 from apps.likes import mixin_tools
 from apps.likes.serializers.like import FanSerializer, LikeSerializer
+from apps.user.models import User
 
 
 class LikedMixin:
@@ -42,12 +43,16 @@ class LikedMixin:
             obj = self.get_object()
             if mixin_tools.is_fan(obj, request.user):
                 return Response(status=status.HTTP_409_CONFLICT)
+            if isinstance(obj, User):
+                mixin_tools.add_follower(obj, request.user)
             mixin_tools.add_like(obj, request.user)
             return Response()
         elif self.request.method == 'DELETE':
             obj = self.get_object()
             if not mixin_tools.is_fan(obj, request.user):
                 return Response(status=status.HTTP_404_NOT_FOUND)
+            if isinstance(obj, User):
+                mixin_tools.remove_follower(obj, request.user)
             mixin_tools.remove_like(obj, request.user)
             return Response()
 

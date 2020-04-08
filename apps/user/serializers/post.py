@@ -1,9 +1,13 @@
 from rest_framework.fields import SerializerMethodField
+from rest_framework.relations import HyperlinkedRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from apps.likes import mixin_tools as likes_services
+from apps.media.serializers.album import AlbumShortInfoSerializer
 from apps.media.serializers.song import SongShortInfoSerializer
 from apps.user.models.post import Post
+from apps.user.serializers.playlist import PlaylistShortInfoSerializer
+from apps.user.serializers.user import UserShortInfoSerializer
 
 
 class PostSerializer(ModelSerializer):
@@ -13,7 +17,7 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = ('owner', 'pub_date', 'total_likes', 'text', 'images', 'songs', 'playlists', 'albums')
-        read_only_fields = ('pub_date', )
+        read_only_fields = ('pub_date',)
 
     def get_is_fan(self, obj) -> bool:
         user = self.context.get('request').user
@@ -21,13 +25,25 @@ class PostSerializer(ModelSerializer):
 
 
 class PostShortInfoSerializer(ModelSerializer):
+    owner = UserShortInfoSerializer(read_only=True)
+    songs = SongShortInfoSerializer(many=True, read_only=True)
+    albums = AlbumShortInfoSerializer(many=True, read_only=True)
+    playlists = PlaylistShortInfoSerializer(many=True, read_only=True)
+
     class Meta(PostSerializer.Meta):
-        fields = ()
+        fields = ('id', 'owner', 'pub_date', 'total_likes', 'text', 'images', 'songs', 'playlists', 'albums')
 
 
 class PostCUSerializer(ModelSerializer):
+    images = HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        required=False,
+        view_name='image-detail',
+    )
+
     class Meta(PostSerializer.Meta):
-        fields = ('owner', 'text', 'images', 'songs', 'playlists', 'albums', )
+        fields = ('owner', 'text', 'images', 'songs', 'playlists', 'albums',)
 
     def get_fields(self, *args, **kwargs):
         fields = super(PostCUSerializer, self).get_fields()

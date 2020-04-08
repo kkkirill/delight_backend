@@ -1,7 +1,9 @@
 from django.utils.decorators import method_decorator
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
@@ -79,6 +81,11 @@ class PlaylistView(NestedViewSetMixin,
         IsOwnerOrAdmin: ('create', 'update'),
         IsAuthenticatedOrReadOnly: ('like', 'fans'),
     }
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
+    filterset_fields = '__all__'
+    ordering_fields = '__all__'
+    ordering = ('name',)
+    search_fields = ('id',)  # TODO SearchFilter fields
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

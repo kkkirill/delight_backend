@@ -1,1 +1,1 @@
-from .like import *
+from .like import Like

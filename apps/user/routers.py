@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_extensions.routers import NestedRouterMixin
 
 from apps.user.views.playlist import PlaylistView, SongsInPlaylistView
+from apps.user.views.post import PostView
 from apps.user.views.user import UserView
 
 
@@ -10,7 +11,6 @@ class NestedDefaultRouter(NestedRouterMixin, DefaultRouter):
 
 
 router = NestedDefaultRouter()
-
 
 user_playlist_router = router.register(
     r'user',
@@ -27,3 +27,17 @@ user_playlist_router.register(
     basename='user-playlist-song',
     parents_query_lookups=['user', 'playlist']
 )
+
+user_post_router = router.register(
+    r'user',
+    UserView,
+    basename='user')
+user_post_router.register(
+    r'post',
+    PostView,
+    basename='post',
+    parents_query_lookups=['user_posts']
+)
+
+# post_router = DefaultRouter()
+# post_router.register('post', PostView, 'post-detail')

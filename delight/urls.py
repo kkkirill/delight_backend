@@ -1,8 +1,7 @@
 from django.urls import include, path
-from rest_framework import routers, permissions
-
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import routers, permissions
 
 from apps.media.routers import router as me_router
 from apps.user import urls as user_urls
@@ -21,7 +20,7 @@ schema_view = get_schema_view(
         description='This endpoint shows the API of all RESTful endpoints in '
                     '`delight` application',
     ),
-    public=True, permission_classes=(permissions.AllowAny, )
+    public=True, permission_classes=(permissions.AllowAny,)
 )
 
 router = ApiRouter()
