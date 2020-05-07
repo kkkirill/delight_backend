@@ -4,11 +4,9 @@ from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from apps.likes.mixins import LikedMixin
@@ -69,23 +67,17 @@ from utils.permission_tools import ActionBasedPermission
 ))
 class PlaylistView(NestedViewSetMixin,
                    LikedMixin,
-                   CreateModelMixin,
-                   RetrieveModelMixin,
-                   UpdateModelMixin,
-                   ListModelMixin,
-                   GenericViewSet):
+                   ModelViewSet):
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
         AllowAny: ('retrieve', 'list'),
-        IsOwnerOrAdmin: ('create', 'update'),
+        IsOwnerOrAdmin: ('create', 'update', 'destroy'),
         IsAuthenticatedOrReadOnly: ('like', 'fans'),
     }
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
-    filterset_fields = '__all__'
-    ordering_fields = '__all__'
-    ordering = ('name',)
-    search_fields = ('id',)  # TODO SearchFilter fields
+    ordering_fields = ('id', 'likes', 'songs_amount')
+    search_fields = ('id', 'name', 'owner')
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

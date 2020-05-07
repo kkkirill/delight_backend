@@ -30,3 +30,5 @@ class GenreView(viewsets.ModelViewSet):
     serializer_class = GenreDetailSerializer
     queryset = Genre.objects.all()
     http_method_names = ('get',)
+    ordering_fields = ('id', )
+    search_fields = ('id', 'name')

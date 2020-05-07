@@ -7,12 +7,12 @@ from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
+    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin)
 from rest_framework.permissions import (
     AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from apps.likes.mixins import LikedMixin
 from apps.likes.serializers.like import FanSerializer
@@ -68,22 +68,18 @@ from utils.permission_tools import ActionBasedPermission
     }
 ))
 class SongView(LikedMixin,
-               CreateModelMixin,
-               RetrieveModelMixin,
-               UpdateModelMixin,
-               ListModelMixin,
-               GenericViewSet):
+               ModelViewSet):
     queryset = Song.objects.all()
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
-    filterset_fields = '__all__'
-    ordering_fields = '__all__'
-    search_fields = ('id',)  # TODO SearchFilter fields
+    filterset_fields = ('genres', 'artists',)
+    ordering_fields = ('id', 'listens', 'duration')
+    search_fields = ('id', 'title')
     ordering = ('title',)
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
         AllowAny: ('retrieve', 'list'),
-        IsAdminUser: ('create', 'update'),
+        IsAdminUser: ('create', 'update', 'destroy'),
         IsAuthenticatedOrReadOnly: ('like', 'fans', 'listen'),
     }
 

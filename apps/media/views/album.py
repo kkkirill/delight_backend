@@ -7,7 +7,7 @@ from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import (
     AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly)
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from apps.likes.mixins import LikedMixin
 from apps.likes.serializers.like import FanSerializer
@@ -63,17 +63,12 @@ from utils.permission_tools import ActionBasedPermission
     }
 ))
 class AlbumView(LikedMixin,
-                CreateModelMixin,
-                RetrieveModelMixin,
-                UpdateModelMixin,
-                ListModelMixin,
-                GenericViewSet):
+                ModelViewSet):
     queryset = Album.objects.all()
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
-    filterset_fields = '__all__'
-    ordering_fields = '__all__'
-    search_fields = ('id',)  # TODO SearchFilter fields
-    ordering = ('title',)
+    filterset_fields = ('genres', 'artists')
+    ordering_fields = ('id', 'likes', 'songs_amount', 'release_year')
+    search_fields = ('id', 'title', 'release_year')
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {

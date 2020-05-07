@@ -12,11 +12,11 @@ class NestedDefaultRouter(NestedRouterMixin, DefaultRouter):
 
 router = NestedDefaultRouter()
 
-user_playlist_router = router.register(
+user_router = router.register(
     r'user',
     UserView,
     basename='user')
-user_playlist_router.register(
+user_router.register(
     r'playlist',
     PlaylistView,
     basename='playlist',
@@ -28,16 +28,9 @@ user_playlist_router.register(
     parents_query_lookups=['user', 'playlist']
 )
 
-user_post_router = router.register(
-    r'user',
-    UserView,
-    basename='user')
-user_post_router.register(
+user_router.register(
     r'post',
     PostView,
     basename='post',
-    parents_query_lookups=['user_posts']
+    parents_query_lookups=['user']
 )
-
-# post_router = DefaultRouter()
-# post_router.register('post', PostView, 'post-detail')
