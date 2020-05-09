@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Load .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -24,7 +28,7 @@ SECRET_KEY = 'k4no1o(n^r%a!nsbpket=h!3s_&ld#1dcso*#j=rujebehv@mz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0']
 
 # Application definition
 
@@ -42,11 +46,14 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_framework',
     'rest_framework.authtoken',
+    'storages',
+    'corsheaders',
     # project apps
     'apps.user',
     'apps.media',
     'apps.likes',
     'apps.celery',
+    'apps.s3',
     'delight',
 ]
 
@@ -58,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'delight.urls'
@@ -165,7 +174,6 @@ REDIS_PORT = os.environ.get('REDIS_PORT')
 
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
 
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -194,3 +202,25 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+MAX_FILE_SIZES = {
+    'audio': 20 * 1024 * 1024,
+    'image': 3 * 1024 * 1024
+}
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
+
+# S3
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+STATIC_CLOUDFRONT_DOMAIN = os.environ.get('STATIC_CLOUDFRONT_DOMAIN')
+AWS_S3_STATIC_FILES_DOMAIN = f'{os.environ.get("AWS_STATIC_BUCKET_NAME")}.s3.amazonaws.com'
+
+DEFAULT_MEDIA_LOGO_FILENAME = 'media_logo.png'
+DEFAULT_USER_LOGO_FILENAME = 'user_logo.png'
+
+AWS_DEFAULT_ACL = None
+AWS_STATIC_BUCKET_NAME = os.environ.get('AWS_STATIC_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')

@@ -4,6 +4,7 @@ from django.db.models import TextField, URLField, DateTimeField, ManyToManyField
 
 from apps.media.models import Song, Album
 from apps.user.models.playlist import Playlist
+from delight.validators import CustomURLValidator
 from . import User
 
 
@@ -14,7 +15,7 @@ class Post(Model):
     playlists = ManyToManyField(Playlist, related_name='posts', blank=True)
     albums = ManyToManyField(Album, related_name='posts', blank=True)
     pub_date = DateTimeField(auto_now_add=True)
-    images = ArrayField(URLField(), size=10, blank=True, default=list)
+    images = ArrayField(URLField(), size=10, blank=True, default=list, validators=[CustomURLValidator])
     likes = GenericRelation('likes.Like', related_query_name='posts', on_delete=CASCADE)
 
     @property

@@ -3,12 +3,15 @@ from django.db.models import (
     CharField, ManyToManyField, Model, TextField, URLField)
 
 from apps.likes.models.like import Like
+from delight.settings import DEFAULT_USER_LOGO_FILENAME, STATIC_CLOUDFRONT_DOMAIN
+from delight.validators import CustomURLValidator
 
 
 class Artist(Model):
     stage_name = CharField(max_length=200)
     info = TextField(blank=True)
-    photo = URLField(default='image.png')
+    photo = URLField(default=f'{STATIC_CLOUDFRONT_DOMAIN}/default/{DEFAULT_USER_LOGO_FILENAME}',
+                     validators=[CustomURLValidator])
     genres = ManyToManyField('Genre', related_name='artists')
     likes = GenericRelation(Like, related_query_name='artists')
 

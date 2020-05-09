@@ -5,6 +5,7 @@ from rest_framework import routers, permissions
 
 from apps.media.routers import router as me_router
 from apps.user import urls as user_urls
+from apps.s3.routers import router as upload_router
 from apps.user.routers import router as us_router
 
 
@@ -30,6 +31,7 @@ router.extend(us_router)
 urlpatterns = (
     path('api/', include(router.urls)),
     path('auth/', include(user_urls)),
+    path('upload/', include(upload_router.urls)),
     path('swagger.json', schema_view.without_ui(cache_timeout=0),
          name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),

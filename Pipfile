@@ -12,6 +12,8 @@ awscli = "==1.16.236"
 boto3 = "==1.9.226"
 
 [packages]
+botocore = "==1.12.226"
+boto3 = "==1.9.226"
 pillow = "==6.1.0"
 Django = "==2.2.4"
 djangorestframework = "==3.10.2"
@@ -24,6 +26,9 @@ django-redis = "==4.10.0"
 celery = "==4.3.0"
 drf-yasg = "==1.16.1"
 packaging = "==19.2"
+django-storages = "==1.9.1"
+python-dotenv = "==0.13.0"
+django-cors-headers = "==3.2.1"
 
 [requires]
 python_version = "3.7"

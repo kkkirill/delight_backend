@@ -1,7 +1,10 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db.models import (
-    BooleanField, CharField, EmailField, ImageField, IntegerField,
-    ManyToManyField)
+    BooleanField, CharField, EmailField, IntegerField,
+    ManyToManyField, URLField)
+
+from delight.settings import STATIC_CLOUDFRONT_DOMAIN, DEFAULT_USER_LOGO_FILENAME
+from delight.validators import CustomURLValidator
 
 
 class UserManager(BaseUserManager):
@@ -37,7 +40,8 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     username = CharField(max_length=50, unique=True)
     email = EmailField(max_length=50, unique=True)
-    photo = ImageField(default=None, upload_to='media/')
+    photo = URLField(default=f'{STATIC_CLOUDFRONT_DOMAIN}/default/{DEFAULT_USER_LOGO_FILENAME}',
+                     validators=[CustomURLValidator])
     followers = ManyToManyField('User', blank=True, related_name='following')
     followers_amount = IntegerField(default=0)
     is_staff = BooleanField(default=False)

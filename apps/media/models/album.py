@@ -4,12 +4,15 @@ from django.db.models import (
     URLField)
 
 from apps.likes.models.like import Like
+from delight.settings import DEFAULT_MEDIA_LOGO_FILENAME, STATIC_CLOUDFRONT_DOMAIN
+from delight.validators import CustomURLValidator
 
 
 class Album(Model):
     title = CharField(max_length=200)
     songs_amount = PositiveSmallIntegerField(default=0)
-    photo = URLField(default='image.png')
+    photo = URLField(default=f'{STATIC_CLOUDFRONT_DOMAIN}/default/{DEFAULT_MEDIA_LOGO_FILENAME}',
+                     validators=[CustomURLValidator])
     release_year = DateField()
     artists = ManyToManyField('Artist', related_name='albums')
     genres = ManyToManyField('Genre', related_name='albums')
