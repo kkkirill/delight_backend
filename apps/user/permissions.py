@@ -4,7 +4,6 @@ from rest_framework.permissions import BasePermission
 class IsOwnerOrAdmin(BasePermission):
     def has_permission(self, request, view):
         try:
-            request.data['owner']
             return (
                 request.user.id == int(request.data['owner'])
                 or request.user.is_staff

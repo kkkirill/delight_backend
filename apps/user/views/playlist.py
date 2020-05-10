@@ -68,6 +68,7 @@ from utils.permission_tools import ActionBasedPermission
 class PlaylistView(NestedViewSetMixin,
                    LikedMixin,
                    ModelViewSet):
+    queryset = Playlist.objects.all()
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {

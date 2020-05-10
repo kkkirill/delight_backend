@@ -7,7 +7,7 @@ from apps.user.models.playlist import Playlist
 
 
 class PlaylistSerializer(ModelSerializer):
-    songs = SongShortInfoSerializer(many=True,)
+    songs = SongShortInfoSerializer(many=True, )
     is_fan = SerializerMethodField()
 
     class Meta:
@@ -27,7 +27,6 @@ class PlaylistShortInfoSerializer(ModelSerializer):
 
 
 class PlaylistCUSerializer(ModelSerializer):
-
     class Meta(PlaylistSerializer.Meta):
         fields = ('name', 'is_private', 'owner')
 

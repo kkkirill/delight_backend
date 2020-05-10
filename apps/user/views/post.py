@@ -18,6 +18,7 @@ from utils.permission_tools import ActionBasedPermission
 class PostView(NestedViewSetMixin,
                LikedMixin,
                ModelViewSet):
+    queryset = Post.objects.all()
     http_method_names = ('get', 'post', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
@@ -31,8 +32,6 @@ class PostView(NestedViewSetMixin,
     ordering = ('-pub_date',)
 
     def get_serializer_class(self):
-        print('Action', getattr(self, 'action'))
-
         if self.request.method == 'GET':
             if self.action == 'list':
                 return PostShortInfoSerializer
@@ -54,7 +53,9 @@ class PostView(NestedViewSetMixin,
             return Post.objects.all()
 
         user_id = self.kwargs['parent_lookup_user']
+        following = [] if self.request.user.is_anonymous else self.request.user.following.values_list('id')
+
         posts = Post.objects.filter(
-            Q(owner__in=chain(*self.request.user.following.values_list('id'))) | Q(owner=user_id)
+            Q(owner__in=chain(*following)) | Q(owner=user_id)
         )
         return posts

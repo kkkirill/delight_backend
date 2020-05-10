@@ -46,17 +46,16 @@ class UserLoginSerializer(Serializer):
 
 
 class UserSerializer(ModelSerializer):
-    followers = HyperlinkedRelatedField(many=True, read_only=True,
-                                        view_name='user-detail')
+    followers = HyperlinkedRelatedField(many=True, read_only=True, view_name='user-detail')
+    following = HyperlinkedRelatedField(many=True, read_only=True, view_name='user-detail')
     password = CharField(max_length=128, write_only=True,
                          style={'input_type': 'password'})
     likes = LikeSerializer(many=True, )
-    # posts = PostShortInfoSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
         fields = ('url', 'email', 'username', 'password', 'photo', 'followers',
-                  'followers_amount', 'is_staff', 'likes', 'posts')
+                  'followers_amount', 'is_staff', 'likes', 'following')
 
 
 class UserShortInfoSerializer(ModelSerializer):

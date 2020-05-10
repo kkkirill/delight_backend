@@ -29,6 +29,7 @@ packaging = "==19.2"
 django-storages = "==1.9.1"
 python-dotenv = "==0.13.0"
 django-cors-headers = "==3.2.1"
+djangorestframework-camel-case = "==1.1.2"
 
 [requires]
 python_version = "3.7"

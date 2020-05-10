@@ -9,6 +9,7 @@ from apps.media.models.album import Album
 from apps.media.models.artist import Artist
 from apps.media.models.genre import Genre
 from apps.media.models.song import Song
+from apps.user.models import Post
 from apps.user.models.playlist import Playlist
 from apps.user.models.user import User
 
@@ -163,6 +164,45 @@ class PlaylistFactory(factory.django.DjangoModelFactory):
                 self.songs.add(so)
 
 
+class PostFactory(factory.django.DjangoModelFactory):
+    owner = factory.SubFactory(UserFactory)
+    text = factory.Faker('pystr', min_chars=5, max_chars=50)
+    images = [factory.Faker('image_url') for i in range(randint(1, 11))]
+    pub_date = factory.Faker('date_time')
+
+    class Meta:
+        model = Post
+
+    @factory.post_generation
+    def songs(self, create, extracted):
+        if not create:
+            return
+
+        if extracted:
+            self.songs_amount = len(extracted)
+
+            for so in extracted:
+                self.songs.add(so)
+
+    @factory.post_generation
+    def albums(self, create, extracted):
+        if not create:
+            return
+
+        if extracted:
+            for ar in extracted:
+                self.albums.add(ar)
+
+    @factory.post_generation
+    def playlists(self, create, extracted):
+        if not create:
+            return
+
+        if extracted:
+            for ar in extracted:
+                self.playlists.add(ar)
+
+
 class LikedObjectFactory(factory.django.DjangoModelFactory):
     # user = factory.SubFactory(UserFactory)
     object_id = factory.SelfAttribute('content_object.id')
@@ -202,7 +242,14 @@ class LikedPlaylistFactory(LikedObjectFactory):
         model = Like
 
 
-def fill_with_data(model: Union[Album, Artist, Genre, Song, User, Playlist],
+class LikedPostFactory(LikedObjectFactory):
+    content_object = Post
+
+    class Meta:
+        model = Like
+
+
+def fill_with_data(model: Union[Album, Artist, Genre, Song, User, Playlist, Post],
                    min_limit: int, max_limit: int) -> frozenset:
     """
     This function generates a collection with random size.
@@ -235,6 +282,7 @@ def fill(amount=50):
     Song.objects.all().delete()
     User.objects.all().delete()
     Playlist.objects.all().delete()
+    Post.objects.all().delete()
     Like.objects.all().delete()
 
     # creating genres here
@@ -284,6 +332,11 @@ def fill(amount=50):
                 user=user,
                 object_id=get_id(fill_with_data(songs, 1, 1))
             )
+        PostFactory.create(
+            songs=fill_with_data(songs, 5, 10),
+            albums=fill_with_data(albums, 5, 10),
+            playlists=fill_with_data(Playlist.objects.filter(owner=user).all(), 5, 10)
+        )
 
     # creating likes for playlists here
     users = User.objects.all()
