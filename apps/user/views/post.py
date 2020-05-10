@@ -53,9 +53,11 @@ class PostView(NestedViewSetMixin,
             return Post.objects.all()
 
         user_id = self.kwargs['parent_lookup_user']
-        following = [] if self.request.user.is_anonymous else self.request.user.following.values_list('id')
-
-        posts = Post.objects.filter(
-            Q(owner__in=chain(*following)) | Q(owner=user_id)
-        )
+        if user_id == -1 or self.request.user.is_anonymous:
+            posts = Post.objects.all().order_by('-total_likes')[:20]
+        else:
+            following = self.request.user.following.values_list('id')
+            posts = Post.objects.filter(
+                Q(owner__in=chain(*following)) | Q(owner=user_id)
+            )
         return posts

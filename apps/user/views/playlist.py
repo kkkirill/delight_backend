@@ -99,7 +99,8 @@ class PlaylistView(NestedViewSetMixin,
             return Playlist.objects.none()
 
         user_id = self.kwargs['parent_lookup_user_playlists']
-
+        if user_id == -1:
+            return Playlist.objects.filter(is_private=False).order_by('-total_likes')[:20]
         if self.request.user.is_staff:
             return Playlist.objects.all()
         if self.request.user.id == user_id:
