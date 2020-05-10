@@ -13,7 +13,7 @@ class ArtistDetailSerializer(ModelSerializer):
     class Meta:
         model = Artist
         fields = (
-            'url', 'stage_name', 'info', 'photo', 'genres', 'is_fan',
+            'id', 'stage_name', 'info', 'photo', 'genres', 'is_fan',
             'total_likes'
         )
 
@@ -24,12 +24,12 @@ class ArtistDetailSerializer(ModelSerializer):
 
 class ArtistShortInfoSerializer(ArtistDetailSerializer):
     class Meta(ArtistDetailSerializer.Meta):
-        fields = ('url', 'stage_name', 'photo')
+        fields = ('id', 'stage_name', 'photo')
 
 
 class ArtistCUSerializer(ModelSerializer):
     class Meta(ArtistDetailSerializer.Meta):
-        fields = ('url', 'stage_name', 'info', 'photo', 'genres')
+        fields = ('id', 'stage_name', 'info', 'photo', 'genres')
 
     def get_fields(self, *args, **kwargs):
         fields = super(ArtistCUSerializer, self).get_fields()

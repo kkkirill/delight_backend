@@ -4,6 +4,8 @@ from rest_framework.serializers import (
     Serializer, ValidationError)
 
 from apps.likes.serializers.like import LikeSerializer
+from apps.user.models import Playlist
+from delight.settings import FAVORITES_PLAYLIST_NAME, MY_SONGS_PLAYLIST_NAME
 
 User = get_user_model()
 
@@ -17,7 +19,14 @@ class UserRegistrationSerializer(ModelSerializer):
         fields = ('email', 'username', 'password', 'token')
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        user: User = User.objects.create_user(**validated_data)
+        user.playlists.create(name=FAVORITES_PLAYLIST_NAME, is_private=True)
+        user.playlists.create(name=MY_SONGS_PLAYLIST_NAME, is_private=True)
+        # favorites = Playlist.objects.create(name=FAVORITES_PLAYLIST_NAME, owner=user, is_private=True)
+        # my_songs = Playlist.objects.create(name=MY_SONGS_PLAYLIST_NAME, owner=user, is_private=True)
+        # user.playlists.add(favorites, my_songs)
+        user.save()
+        return user
 
 
 class UserLoginSerializer(Serializer):
@@ -54,10 +63,10 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('url', 'email', 'username', 'password', 'photo', 'followers',
+        fields = ('id', 'email', 'username', 'password', 'photo', 'followers',
                   'followers_amount', 'is_staff', 'likes', 'following')
 
 
 class UserShortInfoSerializer(ModelSerializer):
     class Meta(UserSerializer.Meta):
-        fields = ('url', 'username', 'photo', 'followers', 'followers_amount')
+        fields = ('id', 'username', 'photo', 'followers', 'followers_amount')

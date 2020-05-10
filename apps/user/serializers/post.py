@@ -18,7 +18,7 @@ class PostSerializer(ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('owner', 'pub_date', 'total_likes', 'text', 'images', 'songs', 'playlists', 'albums', 'is_fan')
+        fields = ('id', 'owner', 'pub_date', 'total_likes', 'text', 'images', 'songs', 'playlists', 'albums', 'is_fan')
         read_only_fields = ('pub_date',)
 
     def get_is_fan(self, obj) -> bool:

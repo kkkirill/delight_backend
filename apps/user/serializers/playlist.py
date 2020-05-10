@@ -12,7 +12,7 @@ class PlaylistSerializer(ModelSerializer):
 
     class Meta:
         model = Playlist
-        fields = ('name', 'songs', 'songs_amount', 'is_private', 'owner',
+        fields = ('id', 'name', 'songs', 'songs_amount', 'is_private', 'owner',
                   'is_fan', 'total_likes')
         read_only_fields = ('songs_amount',)
 
@@ -44,7 +44,7 @@ class SongsInPlaylistSerializer(ModelSerializer):
         fields = ('songs',)
 
     def create(self, validated_data):
-        songs_data = validated_data.pop("songs", None)
+        songs_data = validated_data.pop('songs', None)
         playlist_id = self._context['view'].kwargs['parent_lookup_playlist']
         playlist = Playlist.objects.get(id=playlist_id)
         playlist.songs.add(*songs_data)

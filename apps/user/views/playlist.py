@@ -16,6 +16,7 @@ from apps.user.permissions import IsOwnerOrAdmin, IsOwnerOrAdminSong
 from apps.user.serializers.playlist import (
     PlaylistCUSerializer, PlaylistSerializer, PlaylistShortInfoSerializer,
     SongsInPlaylistSerializer)
+from delight.settings import MY_SONGS_PLAYLIST_NAME, FAVORITES_PLAYLIST_NAME
 from utils.permission_tools import ActionBasedPermission
 
 
@@ -78,6 +79,7 @@ class PlaylistView(NestedViewSetMixin,
     }
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     ordering_fields = ('id', 'likes', 'songs_amount')
+    ordering = ['id']
     search_fields = ('id', 'name', 'owner')
 
     def get_serializer_class(self):
@@ -98,13 +100,16 @@ class PlaylistView(NestedViewSetMixin,
         if getattr(self, 'swagger_fake_view', False):
             return Playlist.objects.none()
 
-        user_id = self.kwargs['parent_lookup_user_playlists']
+        user_id = int(self.kwargs['parent_lookup_user_playlists'])
         if user_id == -1:
-            return Playlist.objects.filter(is_private=False).order_by('-total_likes')[:20]
+            return Playlist.objects.filter(is_private=False).order_by('-total_likes')
         if self.request.user.is_staff:
             return Playlist.objects.all()
         if self.request.user.id == user_id:
-            return Playlist.objects.filter(owner_id=user_id)
+            qs = Playlist.objects.filter(owner_id=user_id)
+            if self.action in ['create', 'destroy']:
+                return qs.exclude(name__in=[FAVORITES_PLAYLIST_NAME, MY_SONGS_PLAYLIST_NAME])
+            return qs
         return Playlist.objects.filter(owner=user_id, is_private=False)
 
 

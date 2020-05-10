@@ -3,11 +3,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import (
     AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly)
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from apps.likes.mixins import LikedMixin
 from apps.likes.serializers.like import FanSerializer

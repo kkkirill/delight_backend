@@ -14,7 +14,7 @@ class SongDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Song
-        fields = ('url', 'title', 'duration', 'image', 'file',
+        fields = ('id', 'title', 'duration', 'image', 'file',
                   'listens', 'explicit', 'artists', 'genres',
                   'total_likes', 'is_fan')
         read_only_fields = ('listens', 'duration')
@@ -26,12 +26,12 @@ class SongDetailSerializer(ModelSerializer):
 
 class SongShortInfoSerializer(SongDetailSerializer):
     class Meta(SongDetailSerializer.Meta):
-        fields = ('url', 'title', 'duration', 'explicit', 'image')
+        fields = ('id', 'title', 'duration', 'explicit', 'image')
 
 
 class SongCUSerializer(ModelSerializer):
     class Meta(SongDetailSerializer.Meta):
-        fields = ('url', 'title', 'image', 'file',
+        fields = ('id', 'title', 'image', 'file',
                   'explicit', 'artists', 'genres')
 
     def get_fields(self, *args, **kwargs):
@@ -53,8 +53,7 @@ class SongCUSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         genres_data = validated_data.pop('genres', None)
         artists_data = validated_data.pop('artists', None)
-        instance = super(SongCUSerializer, self).update(instance,
-                                                        validated_data)
+        instance = super(SongCUSerializer, self).update(instance, validated_data)
         instance.save()
         if genres_data:
             instance.genres.set(genres_data)

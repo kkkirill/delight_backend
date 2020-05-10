@@ -3,11 +3,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import (
     AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly)
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from apps.likes.mixins import LikedMixin
 from apps.likes.serializers.like import FanSerializer
@@ -68,6 +66,7 @@ class AlbumView(LikedMixin,
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     filterset_fields = ('genres', 'artists')
     ordering_fields = ('id', 'likes', 'songs_amount', 'release_year')
+    ordering = ['id']
     search_fields = ('id', 'title', 'release_year')
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)

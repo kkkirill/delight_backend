@@ -35,7 +35,7 @@ class GenreFactory(factory.django.DjangoModelFactory):
 class ArtistFactory(factory.django.DjangoModelFactory):
     stage_name = factory.Faker('name')
     info = factory.Faker('text', max_nb_chars=200)
-    photo = factory.Faker('file_name', category="image")
+    photo = factory.Faker('image_url')
 
     class Meta:
         model = Artist
@@ -54,7 +54,7 @@ class SongFactory(factory.django.DjangoModelFactory):
     title = factory.Faker('pystr', min_chars=5, max_chars=15)
     duration = factory.Faker('pyint', min_value=30, max_value=300)
     file = factory.Faker('file_name', category="audio")
-    image = factory.Faker('file_name', category="image")
+    image = factory.Faker('image_url')
     listens = factory.Faker('pyint')
     explicit = factory.Faker('pybool')
 
@@ -82,10 +82,9 @@ class SongFactory(factory.django.DjangoModelFactory):
 
 class AlbumFactory(factory.django.DjangoModelFactory):
     title = factory.Faker('pystr', min_chars=5, max_chars=15)
-    songs_amount = 0
     release_year = factory.Faker('date_between', start_date='-30y',
                                  end_date='now')
-    photo = factory.Faker('file_name', category="image")
+    photo = factory.Faker('image_url')
 
     class Meta:
         model = Album
@@ -114,8 +113,6 @@ class AlbumFactory(factory.django.DjangoModelFactory):
             return
 
         if extracted:
-            self.songs_amount = len(extracted)
-
             for so in extracted:
                 self.songs.add(so)
 
@@ -124,7 +121,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     username = factory.Faker('pystr', min_chars=5, max_chars=20)
     email = factory.Faker('email')
     password = factory.PostGenerationMethodCall('set_password', 'password')
-    photo = factory.Faker('file_name', category='image')
+    photo = factory.Faker('image_url')
     followers_amount = 0
     is_staff = factory.Faker('pybool')
 
@@ -145,7 +142,6 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class PlaylistFactory(factory.django.DjangoModelFactory):
     name = factory.Faker('pystr', min_chars=5, max_chars=10)
-    songs_amount = 0
     is_private = factory.Faker('pybool')
     owner = factory.SubFactory(UserFactory)
 
@@ -158,8 +154,6 @@ class PlaylistFactory(factory.django.DjangoModelFactory):
             return
 
         if extracted:
-            self.songs_amount = len(extracted)
-
             for so in extracted:
                 self.songs.add(so)
 
@@ -344,6 +338,16 @@ def fill(amount=50):
         for user in users:
             playlists = Playlist.objects.filter(is_private=False).exclude(
                 owner=user
+            )
+            PlaylistFactory.create(
+                songs=fill_with_data(songs, 5, 10),
+                owner=user,
+                name='Favorites'
+            )
+            PlaylistFactory.create(
+                songs=fill_with_data(songs, 5, 10),
+                owner=user,
+                name='My Songs'
             )
             LikedPlaylistFactory.create(
                 user=user,
