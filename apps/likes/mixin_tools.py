@@ -13,8 +13,7 @@ def add_like(obj, user):
 
     if not user.is_anonymous and isinstance(obj, Song):
         favorites = user.playlists.get(name=FAVORITES_PLAYLIST_NAME)
-        if not favorites.songs.filter(pk=obj.pk).exists():
-            favorites.songs.add(like.content_object)
+        favorites.songs.add(like.content_object)
     return like
 
 
@@ -26,8 +25,7 @@ def remove_like(obj, user):
 
     if not user.is_anonymous and isinstance(obj, Song):
         favorites = user.playlists.get(name=FAVORITES_PLAYLIST_NAME)
-        if not favorites.songs.filter(pk=obj.pk).exists():
-            favorites.songs.remove(obj)
+        favorites.songs.remove(obj)
 
 
 def is_fan(obj, user) -> bool:

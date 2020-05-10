@@ -19,6 +19,7 @@ class Song(Model):
     artists = ManyToManyField('Artist', related_name='songs')
     genres = ManyToManyField('Genre', related_name='songs')
     likes = GenericRelation('likes.Like', related_query_name='songs')
+    is_private = BooleanField(default=False)
 
     def __str__(self):
         return self.title

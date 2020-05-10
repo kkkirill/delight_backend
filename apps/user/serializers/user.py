@@ -4,7 +4,6 @@ from rest_framework.serializers import (
     Serializer, ValidationError)
 
 from apps.likes.serializers.like import LikeSerializer
-from apps.user.models import Playlist
 from delight.settings import FAVORITES_PLAYLIST_NAME, MY_SONGS_PLAYLIST_NAME
 
 User = get_user_model()
@@ -22,9 +21,6 @@ class UserRegistrationSerializer(ModelSerializer):
         user: User = User.objects.create_user(**validated_data)
         user.playlists.create(name=FAVORITES_PLAYLIST_NAME, is_private=True)
         user.playlists.create(name=MY_SONGS_PLAYLIST_NAME, is_private=True)
-        # favorites = Playlist.objects.create(name=FAVORITES_PLAYLIST_NAME, owner=user, is_private=True)
-        # my_songs = Playlist.objects.create(name=MY_SONGS_PLAYLIST_NAME, owner=user, is_private=True)
-        # user.playlists.add(favorites, my_songs)
         user.save()
         return user
 

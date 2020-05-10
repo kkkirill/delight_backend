@@ -1,4 +1,4 @@
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 
 from apps.s3.models import File
@@ -13,5 +13,6 @@ class S3View(ModelViewSet):
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
         AllowAny: ('retrieve', 'list'),
-        IsAdminUser: ('create', 'update', 'destroy'),
+        IsAuthenticated: ('create',),
+        IsAdminUser: ('update', 'destroy'),
     }

@@ -1,5 +1,6 @@
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
+from rest_framework.validators import UniqueTogetherValidator
 
 from apps.likes import mixin_tools as likes_services
 from apps.media.serializers.song import SongShortInfoSerializer
@@ -29,6 +30,12 @@ class PlaylistShortInfoSerializer(ModelSerializer):
 class PlaylistCUSerializer(ModelSerializer):
     class Meta(PlaylistSerializer.Meta):
         fields = ('name', 'is_private', 'owner')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Playlist.objects.all(),
+                fields=('owner', 'name')
+            )
+        ]
 
     def get_fields(self, *args, **kwargs):
         fields = super(PlaylistCUSerializer, self).get_fields()

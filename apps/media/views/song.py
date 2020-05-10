@@ -1,24 +1,23 @@
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter, SearchFilter
 from django_redis import get_redis_connection
 from drf_yasg.openapi import Response as SwaggerResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin)
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import (
-    AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly)
+    AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from apps.likes.mixins import LikedMixin
 from apps.likes.serializers.like import FanSerializer
 from apps.media.models.song import Song
 from apps.media.serializers.song import (
     SongCUSerializer, SongDetailSerializer, SongShortInfoSerializer)
+from apps.user.permissions import IsOwnerOrAdmin
 from utils.permission_tools import ActionBasedPermission
 
 
@@ -67,9 +66,7 @@ from utils.permission_tools import ActionBasedPermission
         '404': "Song with specified id doesn't exist"
     }
 ))
-class SongView(LikedMixin,
-               ModelViewSet):
-    queryset = Song.objects.all()
+class SongView(LikedMixin, ModelViewSet):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     filterset_fields = ('genres', 'artists',)
     ordering_fields = ('id', 'listens', 'duration')
@@ -79,9 +76,15 @@ class SongView(LikedMixin,
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
         AllowAny: ('retrieve', 'list'),
-        IsAdminUser: ('create', 'update', 'destroy'),
+        IsAuthenticated: ('create',),
+        IsOwnerOrAdmin: ('update', 'destroy'),
         IsAuthenticatedOrReadOnly: ('like', 'fans', 'listen'),
     }
+
+    def get_queryset(self):
+        if self.action in ['retrieve', 'list']:
+            return Song.objects.filter(is_private=False)
+        return Song.objects.all()
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

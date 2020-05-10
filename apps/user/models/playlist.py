@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models import (
-    CASCADE, BooleanField, CharField, ForeignKey, ManyToManyField, Model)
+    CASCADE, BooleanField, CharField, ForeignKey, ManyToManyField, Model, UniqueConstraint)
 
 from apps.media.models.song import Song
 from apps.user.models.user import User
@@ -12,6 +12,11 @@ class Playlist(Model):
     is_private = BooleanField(default=False)
     owner = ForeignKey(User, related_name='playlists', on_delete=CASCADE)
     likes = GenericRelation('likes.Like', related_query_name='playlists')
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['owner', 'name'], name='unique_playlist_name_per_user_constraint')
+        ]
 
     @property
     def songs_amount(self):

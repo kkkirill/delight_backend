@@ -5,6 +5,7 @@ from apps.likes import mixin_tools as likes_services
 from apps.media.models.song import Song
 from apps.media.serializers.artist import ArtistShortInfoSerializer
 from apps.media.serializers.genre import GenreDetailSerializer
+from delight.settings import MY_SONGS_PLAYLIST_NAME
 
 
 class SongDetailSerializer(ModelSerializer):
@@ -43,11 +44,16 @@ class SongCUSerializer(ModelSerializer):
         return fields
 
     def create(self, validated_data):
+        user = self.context.get('request').user
         genres_data = validated_data.pop('genres')
         artists_data = validated_data.pop('artists')
         song = Song.objects.create(**validated_data)
         song.genres.add(*genres_data)
         song.artists.add(*artists_data)
+        if not user.is_staff:
+            song.is_private = True
+            song.save()
+            user.playlists.get(name=MY_SONGS_PLAYLIST_NAME).songs.add(song)
         return song
 
     def update(self, instance, validated_data):
