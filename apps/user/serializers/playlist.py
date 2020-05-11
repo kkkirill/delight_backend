@@ -13,7 +13,7 @@ class PlaylistSerializer(ModelSerializer):
 
     class Meta:
         model = Playlist
-        fields = ('id', 'name', 'songs', 'songs_amount', 'is_private', 'owner',
+        fields = ('id', 'name', 'photo', 'songs', 'songs_amount', 'is_private', 'owner',
                   'is_fan', 'total_likes')
         read_only_fields = ('songs_amount',)
 
@@ -24,12 +24,12 @@ class PlaylistSerializer(ModelSerializer):
 
 class PlaylistShortInfoSerializer(ModelSerializer):
     class Meta(PlaylistSerializer.Meta):
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'photo')
 
 
 class PlaylistCUSerializer(ModelSerializer):
     class Meta(PlaylistSerializer.Meta):
-        fields = ('name', 'is_private', 'owner')
+        fields = ('name', 'is_private', 'photo', 'owner')
         validators = [
             UniqueTogetherValidator(
                 queryset=Playlist.objects.all(),

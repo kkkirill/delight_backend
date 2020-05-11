@@ -143,6 +143,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 class PlaylistFactory(factory.django.DjangoModelFactory):
     name = factory.Faker('pystr', min_chars=5, max_chars=10)
     is_private = factory.Faker('pybool')
+    photo = factory.Faker('image_url')
     owner = factory.SubFactory(UserFactory)
 
     class Meta:
@@ -161,7 +162,7 @@ class PlaylistFactory(factory.django.DjangoModelFactory):
 class PostFactory(factory.django.DjangoModelFactory):
     owner = factory.SubFactory(UserFactory)
     text = factory.Faker('pystr', min_chars=5, max_chars=50)
-    images = [factory.Faker('image_url') for i in range(randint(1, 11))]
+    images = [factory.Faker('image_url').generate() for i in range(randint(1, 11))]
     pub_date = factory.Faker('date_time')
 
     class Meta:
@@ -173,8 +174,6 @@ class PostFactory(factory.django.DjangoModelFactory):
             return
 
         if extracted:
-            self.songs_amount = len(extracted)
-
             for so in extracted:
                 self.songs.add(so)
 
@@ -198,7 +197,6 @@ class PostFactory(factory.django.DjangoModelFactory):
 
 
 class LikedObjectFactory(factory.django.DjangoModelFactory):
-    # user = factory.SubFactory(UserFactory)
     object_id = factory.SelfAttribute('content_object.id')
     content_type = factory.LazyAttribute(
         lambda o: ContentType.objects.get_for_model(o.content_object))

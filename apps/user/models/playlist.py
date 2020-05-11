@@ -1,13 +1,17 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models import (
-    CASCADE, BooleanField, CharField, ForeignKey, ManyToManyField, Model, UniqueConstraint)
+    CASCADE, BooleanField, CharField, ForeignKey, ManyToManyField, Model, UniqueConstraint, URLField)
 
 from apps.media.models.song import Song
 from apps.user.models.user import User
+from delight.settings import STATIC_CLOUDFRONT_DOMAIN, DEFAULT_MEDIA_LOGO_FILENAME
+from delight.validators import CustomURLValidator
 
 
 class Playlist(Model):
     name = CharField(max_length=200)
+    photo = URLField(default=f'{STATIC_CLOUDFRONT_DOMAIN}/default/{DEFAULT_MEDIA_LOGO_FILENAME}',
+                     validators=[CustomURLValidator])
     songs = ManyToManyField(Song, related_name='playlists')
     is_private = BooleanField(default=False)
     owner = ForeignKey(User, related_name='playlists', on_delete=CASCADE)
