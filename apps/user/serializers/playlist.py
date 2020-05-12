@@ -5,9 +5,11 @@ from rest_framework.validators import UniqueTogetherValidator
 from apps.likes import mixin_tools as likes_services
 from apps.media.serializers.song import SongShortInfoSerializer
 from apps.user.models.playlist import Playlist
+from apps.user.serializers.user import UserShortInfoSerializer
 
 
 class PlaylistSerializer(ModelSerializer):
+    owner = UserShortInfoSerializer(read_only=True)
     songs = SongShortInfoSerializer(many=True, )
     is_fan = SerializerMethodField()
 
@@ -24,7 +26,7 @@ class PlaylistSerializer(ModelSerializer):
 
 class PlaylistShortInfoSerializer(ModelSerializer):
     class Meta(PlaylistSerializer.Meta):
-        fields = ('id', 'name', 'photo')
+        fields = ('id', 'name', 'photo', 'owner')
 
 
 class PlaylistCUSerializer(ModelSerializer):

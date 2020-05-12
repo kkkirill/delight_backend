@@ -11,6 +11,7 @@ from apps.user.serializers.user import UserShortInfoSerializer
 
 
 class PostSerializer(ModelSerializer):
+    owner = UserShortInfoSerializer(read_only=True)
     songs = SongShortInfoSerializer(many=True, read_only=True)
     albums = AlbumShortInfoSerializer(many=True, read_only=True)
     playlists = PlaylistShortInfoSerializer(many=True, read_only=True)
@@ -25,16 +26,6 @@ class PostSerializer(ModelSerializer):
     def get_is_fan(self, obj) -> bool:
         user = self.context.get('request').user
         return likes_services.is_fan(obj, user)
-
-
-class AlbumsInPostSerializer(AlbumShortInfoSerializer):
-    class Meta(AlbumShortInfoSerializer.Meta):
-        fields = ('id', 'photo')
-
-
-class PlaylistInPostSerializer(PlaylistShortInfoSerializer):
-    class Meta(PlaylistShortInfoSerializer.Meta):
-        fields = ('id', 'photo')
 
 
 class ArtistInSongInPostSerializer(ArtistShortInfoSerializer):
@@ -52,8 +43,8 @@ class SongInPostSerializer(SongShortInfoSerializer):
 class PostShortInfoSerializer(ModelSerializer):
     owner = UserShortInfoSerializer(read_only=True)
     songs = SongInPostSerializer(many=True, read_only=True)
-    albums = AlbumsInPostSerializer(many=True, read_only=True)
-    playlists = PlaylistInPostSerializer(many=True, read_only=True)
+    albums = AlbumShortInfoSerializer(many=True, read_only=True)
+    playlists = PlaylistShortInfoSerializer(many=True, read_only=True)
     images = ListField(child=URLField())
 
     class Meta(PostSerializer.Meta):

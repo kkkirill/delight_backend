@@ -28,4 +28,4 @@ class File(Model):
         USER_IMAGE: '/user/'
     }
     file = FileField(upload_to=get_filepath, validators=[check_file_size], storage=StaticStorage())
-    type = CharField(choices=FILE_TYPES, max_length=12, unique=True)
+    type = CharField(choices=FILE_TYPES, max_length=12)

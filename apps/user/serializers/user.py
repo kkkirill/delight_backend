@@ -65,4 +65,4 @@ class UserSerializer(ModelSerializer):
 
 class UserShortInfoSerializer(ModelSerializer):
     class Meta(UserSerializer.Meta):
-        fields = ('id', 'username', 'photo', 'followers', 'followers_amount')
+        fields = ('id', 'username', 'photo',)
