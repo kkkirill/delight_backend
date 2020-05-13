@@ -14,7 +14,7 @@ class TestPlaylist:
         owner_id = playlist.owner_id
         res = client.get(
             f'/api/user/{owner_id}/playlist/{playlist.id}/',
-            content_type="application/json")
+            content_type='application/json')
         playlist_dict = res.json()
         songs_list = playlist_dict.get('songs')
         song = songs_list.pop()
@@ -22,7 +22,7 @@ class TestPlaylist:
         assert isinstance(playlist_dict.get('name'), str)
         assert isinstance(playlist_dict.get('songs'), list)
         assert isinstance(songs_list, list)
-        assert isinstance(song.get('url'), str)
+        assert isinstance(song.get('file'), str)
         assert isinstance(song.get('title'), str)
         assert isinstance(song.get('duration'), int)
         assert isinstance(song.get('explicit'), bool)
@@ -34,12 +34,12 @@ class TestPlaylist:
         test playlist detail
         """
         res = client.get(f'/api/user/{user.id}/playlist/{playlist.id}/',
-                         content_type="application/json",
+                         content_type='application/json',
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         playlist_dict = res.json()
         assert res.status_code == 200
         assert isinstance(playlist_dict.get('name'), str)
-        assert isinstance(playlist_dict.get('is_private'), bool)
+        assert isinstance(playlist_dict.get('isPrivate'), bool)
 
     @pytest.mark.parametrize('is_staff', [True])
     @pytest.mark.parametrize('playlist_qty', [0, 5, 10, 25, 45])
@@ -51,11 +51,13 @@ class TestPlaylist:
             * data type
         """
         res = client.get(f'/api/user/{user.id}/playlist/',
-                         content_type="application/json",
+                         content_type='application/json',
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
+        data = res.json()
         assert res.status_code == 200
-        assert isinstance(res.json(), list)
-        assert len(res.json()) == playlist_qty
+        assert isinstance(data.get('results'), list)
+        # -2 because by default for each user web app create 2 playlists (Favorites, My Songs)
+        assert len(data.get('results')) - 2 == playlist_qty
 
     @pytest.mark.parametrize('is_private', [False, True])
     def test_create(self, client, user, token, is_private):
@@ -64,17 +66,17 @@ class TestPlaylist:
         """
         name = faker.Faker().pystr(min_chars=10, max_chars=30)
         data = json.dumps({
-            "name": name,
-            "is_private": is_private,
-            "owner": user.id
+            'name': name,
+            'isPrivate': is_private,
+            'owner': user.id
         })
         res = client.post(f'/api/user/{user.id}/playlist/', data=data,
-                          content_type="application/json",
+                          content_type='application/json',
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         playlist_dict = res.json()
         assert res.status_code == 201
-        assert playlist_dict.get("name") == name
-        assert playlist_dict.get("is_private") is is_private
+        assert playlist_dict.get('name') == name
+        assert playlist_dict.get('isPrivate') is is_private
 
     def test_update(self, client, user, token, playlist):
         """
@@ -83,16 +85,16 @@ class TestPlaylist:
         name = faker.Faker().pystr(min_chars=10, max_chars=30)
         is_private = True
         data = json.dumps({
-            "name": name,
-            "is_private": is_private,
+            'name': name,
+            'isPrivate': is_private,
         })
         res = client.put(f'/api/user/{user.id}/playlist/{playlist.id}/',
-                         data=data, content_type="application/json",
+                         data=data, content_type='application/json',
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         playlist_dict = res.json()
         assert res.status_code == 200
-        assert playlist_dict.get("name") == name
-        assert playlist_dict.get("is_private") is True
+        assert playlist_dict.get('name') == name
+        assert playlist_dict.get('isPrivate') is True
 
     @pytest.mark.parametrize('song_qty', [0])
     @pytest.mark.parametrize('is_staff', [True])
@@ -103,14 +105,14 @@ class TestPlaylist:
         """
         songs_for_added = [song.id for song in songs_for_added]
         data = json.dumps({
-            "songs": songs_for_added
+            'songs': songs_for_added
         })
         res = client.post(f'/api/user/{user.id}/playlist/{playlist.id}/song/',
-                          data=data, content_type="application/json",
+                          data=data, content_type='application/json',
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         songs_dict = res.json()
         assert res.status_code == 201
-        assert set(songs_dict.get("songs")) == set(songs_for_added)
+        assert set(songs_dict.get('songs')) == set(songs_for_added)
 
     @pytest.mark.parametrize('song_qty', [10])
     @pytest.mark.parametrize('is_staff', [True])
@@ -124,7 +126,7 @@ class TestPlaylist:
         assert song_id in songs
         res = client.delete(
                 f'/api/user/{user.id}/playlist/{playlist.id}/song/{song_id}/',
-                content_type="application/json",
+                content_type='application/json',
                 **{'HTTP_AUTHORIZATION': 'Token ' + str(token)}
         )
         songs = {x.id for x in playlist.songs.all()}

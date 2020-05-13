@@ -15,9 +15,9 @@ class TestAlbums:
         album_dict = res.json()
         assert res.status_code == 200
         assert isinstance(album_dict.get('title'), str)
-        assert isinstance(album_dict.get('songs_amount'), int)
+        assert isinstance(album_dict.get('songsAmount'), int)
         assert isinstance(album_dict.get('photo'), str)
-        assert isinstance(album_dict.get('release_year'), str)
+        assert isinstance(album_dict.get('releaseYear'), str)
         assert isinstance(album_dict.get('artists'), list)
         assert isinstance(album_dict.get('genres'), list)
         assert isinstance(album_dict.get('songs'), list)
@@ -30,10 +30,10 @@ class TestAlbums:
             * data type
         """
         res = client.get('/api/album/')
-
+        data = res.json()
         assert res.status_code == 200
-        assert isinstance(res.json(), list)
-        assert len(res.json()) == album_qty
+        assert isinstance(data.get('results'), list)
+        assert len(data.get('results')) == album_qty
 
     def test_detail_error(self, client):
         """
@@ -46,7 +46,7 @@ class TestAlbums:
 
     @pytest.mark.parametrize('is_staff', [True])
     def test_create(self, client, genres, album, artists_for_added, token,
-                    songs_for_added, user):
+                    songs_for_added, user, is_staff):
         """
         test album create endpoint
         """
@@ -56,26 +56,26 @@ class TestAlbums:
         songs = [song.id for song in songs_for_added]
         release_year = faker.Faker().date()
         data = json.dumps({
-            "title": title,
-            "genres": genres,
-            "artists": artists,
-            "songs": songs,
-            "release_year": release_year
+            'title': title,
+            'genres': genres,
+            'artists': artists,
+            'songs': songs,
+            'releaseYear': release_year
         })
         res = client.post(f'/api/album/', data=data,
-                          content_type="application/json",
+                          content_type='application/json',
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         album_dict = res.json()
         assert res.status_code == 201
-        assert album_dict.get("title") == title
-        assert set(album_dict.get("genres")) == set(genres)
-        assert set(album_dict.get("artists")) == set(artists)
-        assert set(album_dict.get("songs")) == set(songs)
-        assert album_dict.get("release_year") == release_year
+        assert album_dict.get('title') == title
+        assert set(album_dict.get('genres')) == set(genres)
+        assert set(album_dict.get('artists')) == set(artists)
+        assert set(album_dict.get('songs')) == set(songs)
+        assert album_dict.get('releaseYear') == release_year
 
     @pytest.mark.parametrize('is_staff', [True])
     def test_update_m2m(self, client, genres, album, artists_for_added, token,
-                        songs_for_added, user):
+                        songs_for_added, user, is_staff):
         """
         test album update m2m fields:
             *genres
@@ -87,24 +87,24 @@ class TestAlbums:
         artists = [artist.id for artist in artists_for_added]
         songs = [song.id for song in songs_for_added]
         data = json.dumps({
-            "title": title,
-            "genres": genres,
-            "artists": artists,
-            "songs": songs
+            'title': title,
+            'genres': genres,
+            'artists': artists,
+            'songs': songs
         })
         res = client.put(f'/api/album/{album.id}/', data=data,
-                         content_type="application/json",
+                         content_type='application/json',
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         album_dict = res.json()
         assert res.status_code == 200
-        assert album_dict.get("title") == title
-        assert set(album_dict.get("genres")) == set(genres)
-        assert set(album_dict.get("artists")) == set(artists)
-        assert set(album_dict.get("songs")) == set(songs)
+        assert album_dict.get('title') == title
+        assert set(album_dict.get('genres')) == set(genres)
+        assert set(album_dict.get('artists')) == set(artists)
+        assert set(album_dict.get('songs')) == set(songs)
 
     @pytest.mark.parametrize('is_staff', [True])
     def test_update_all(self, client, genres, album, artists, songs_for_added,
-                        token, user):
+                        token, user, is_staff):
         """
         test album update fields
         """
@@ -114,19 +114,19 @@ class TestAlbums:
         songs = [song.id for song in songs_for_added]
         release_year = faker.Faker().date()
         data = json.dumps({
-            "title": title,
-            "genres": genres,
-            "artists": artists,
-            "songs": songs,
-            "release_year": release_year
+            'title': title,
+            'genres': genres,
+            'artists': artists,
+            'songs': songs,
+            'releaseYear': release_year
         })
         res = client.put(f'/api/album/{album.id}/', data=data,
-                         content_type="application/json",
+                         content_type='application/json',
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         album_dict = res.json()
         assert res.status_code == 200
-        assert album_dict.get("title") == title
-        assert set(album_dict.get("genres")) == set(genres)
-        assert set(album_dict.get("artists")) == set(artists)
-        assert set(album_dict.get("songs")) == set(songs)
-        assert album_dict.get("release_year") == release_year
+        assert album_dict.get('title') == title
+        assert set(album_dict.get('genres')) == set(genres)
+        assert set(album_dict.get('artists')) == set(artists)
+        assert set(album_dict.get('songs')) == set(songs)
+        assert album_dict.get('releaseYear') == release_year

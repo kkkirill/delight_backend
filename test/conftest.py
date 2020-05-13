@@ -21,22 +21,10 @@ def is_staff():
 
 @pytest.fixture
 def user(is_staff):
-    return UserFactory.create(is_staff=is_staff)
-
-
-@pytest.fixture
-def token(user):
-    return create_token(TokenModel, user, TokenSerializer)
-
-
-@pytest.fixture
-def is_staff():
-    return False
-
-
-@pytest.fixture
-def user(is_staff):
-    return UserFactory.create(is_staff=is_staff)
+    user = UserFactory.create(is_staff=is_staff)
+    PlaylistFactory.create(name='Favorites', is_private=True, owner=user)
+    PlaylistFactory.create(name='My Songs', is_private=True, owner=user)
+    return user
 
 
 @pytest.fixture
@@ -86,6 +74,16 @@ def album():
         genres=GenreFactory.create_batch(size=2),
         songs=SongFactory.create_batch(size=6),
     )
+
+
+@pytest.fixture
+def album_qty():
+    return 1
+
+
+@pytest.fixture
+def albums(album_qty):
+    return AlbumFactory.create_batch(size=album_qty)
 
 
 @pytest.fixture

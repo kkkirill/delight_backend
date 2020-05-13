@@ -306,6 +306,8 @@ def fill(amount=50):
         user = UserFactory.create(
             followers=fill_with_data(users, 0, len(users) // 5)
         )
+        PlaylistFactory.create(name='Favorites', is_private=True, owner=user)
+        PlaylistFactory.create(name='My Songs', is_private=True, owner=user)
         # creating playlists and likes for user
         for _ in range(amount // 10):
             PlaylistFactory.create(
@@ -331,22 +333,11 @@ def fill(amount=50):
         )
 
     # creating likes for playlists here
+    User.objects.filter(playlists=None).delete()
     users = User.objects.all()
+    playlists = Playlist.objects.all()
     for _ in range(amount // 10):
         for user in users:
-            playlists = Playlist.objects.filter(is_private=False).exclude(
-                owner=user
-            )
-            PlaylistFactory.create(
-                songs=fill_with_data(songs, 5, 10),
-                owner=user,
-                name='Favorites'
-            )
-            PlaylistFactory.create(
-                songs=fill_with_data(songs, 5, 10),
-                owner=user,
-                name='My Songs'
-            )
             LikedPlaylistFactory.create(
                 user=user,
                 object_id=get_id(fill_with_data(playlists, 1, 1))

@@ -11,7 +11,7 @@ def add_like(obj, user):
     like, is_created = Like.objects.get_or_create(
         content_type=obj_type, object_id=obj.id, user=user)
 
-    if not user.is_anonymous and isinstance(obj, Song):
+    if (not user.is_anonymous) and isinstance(obj, Song):
         favorites = user.playlists.get(name=FAVORITES_PLAYLIST_NAME)
         favorites.songs.add(like.content_object)
     return like
@@ -23,7 +23,7 @@ def remove_like(obj, user):
         content_type=obj_type, object_id=obj.id, user=user
     ).delete()
 
-    if not user.is_anonymous and isinstance(obj, Song):
+    if (not user.is_anonymous) and isinstance(obj, Song):
         favorites = user.playlists.get(name=FAVORITES_PLAYLIST_NAME)
         favorites.songs.remove(obj)
 

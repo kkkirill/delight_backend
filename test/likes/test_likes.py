@@ -11,13 +11,13 @@ class TestLikes:
         """
         res = client.post(
             f'/api/{content_type}/{content_obj.id}/like/',
-            content_type="application/json",
+            content_type='application/json',
             **{'HTTP_AUTHORIZATION': 'Token ' + str(token)}
         )
         assert res.status_code == 200
         res = client.post(
             f'/api/{content_type}/{content_obj.id}/like/',
-            content_type="application/json",
+            content_type='application/json',
             **{'HTTP_AUTHORIZATION': 'Token ' + str(token)}
         )
         assert res.status_code == 409
@@ -28,20 +28,20 @@ class TestLikes:
         """
         res = client.get(
             f'/api/song/{song.id}/fans/',
-            content_type="application/json"
+            content_type='application/json'
         )
         fans_dict = res.json()[0]
         assert user.id == fans_dict['id']
         assert user.username == fans_dict['username']
         res = client.delete(
             f'/api/song/{song.id}/like/',
-            content_type="application/json",
+            content_type='application/json',
             **{'HTTP_AUTHORIZATION': 'Token ' + str(token)}
         )
         assert res.status_code == 200
         res = client.get(
             f'/api/song/{song.id}/fans/',
-            content_type="application/json"
+            content_type='application/json'
         )
         fans_dict = res.json()
         assert len(fans_dict) == 0
@@ -52,7 +52,7 @@ class TestLikes:
         """
         res = client.post(
             f'/api/song/{song.id}/like/',
-            content_type="application/json",
+            content_type='application/json',
         )
         assert res.status_code == 401
         response = res.json()['detail']
@@ -64,7 +64,7 @@ class TestLikes:
         """
         res = client.delete(
             f'/api/song/{song.id}/like/',
-            content_type="application/json",
+            content_type='application/json',
             **{'HTTP_AUTHORIZATION': 'Token ' + str(token)}
         )
         assert res.status_code == 404
@@ -77,13 +77,13 @@ class TestLikes:
         """
         res = client.post(
             f'/api/{content_type}/{content_obj.id}/like/',
-            content_type="application/json",
+            content_type='application/json',
             **{'HTTP_AUTHORIZATION': 'Token ' + str(token)}
         )
         assert res.status_code == 200
         res = client.get(
             f'/api/{content_type}/{content_obj.id}/fans/',
-            content_type="application/json",
+            content_type='application/json',
             **{'HTTP_AUTHORIZATION': 'Token ' + str(token)}
         )
         assert res.status_code == 200

@@ -14,7 +14,7 @@ class TestArtists:
         res = client.get(f'/api/artist/{artist.id}/')
         artist_dict = res.json()
         assert res.status_code == 200
-        assert isinstance(artist_dict.get('stage_name'), str)
+        assert isinstance(artist_dict.get('stageName'), str)
         assert isinstance(artist_dict.get('info'), str)
         assert isinstance(artist_dict.get('photo'), str)
         assert isinstance(artist_dict.get('genres'), list)
@@ -27,9 +27,11 @@ class TestArtists:
             * data type
         """
         res = client.get('/api/artist/')
+        data = res.json()
+
         assert res.status_code == 200
-        assert isinstance(res.json(), list)
-        assert len(res.json()) == artist_qty
+        assert isinstance(data.get('results'), list)
+        assert len(data.get('results')) == artist_qty
 
     def test_detail_error(self, client):
         """
@@ -48,16 +50,16 @@ class TestArtists:
         stage_name = faker.Faker().name()
         genres = [genre.id for genre in genres]
         data = json.dumps({
-            "stage_name": stage_name,
-            "genres": genres
+            'stageName': stage_name,
+            'genres': genres
         })
         res = client.post('/api/artist/', data=data,
-                          content_type="application/json",
+                          content_type='application/json',
                           **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         artist_dict = res.json()
         assert res.status_code == 201
-        assert set(artist_dict.get("genres")) == set(genres)
-        assert artist_dict.get("stage_name") == stage_name
+        assert set(artist_dict.get('genres')) == set(genres)
+        assert artist_dict.get('stageName') == stage_name
 
     @pytest.mark.parametrize('is_staff', [True])
     def test_update_m2m(self, client, artist, genres, user, token):
@@ -67,16 +69,16 @@ class TestArtists:
         info = faker.Faker().pystr(min_chars=20, max_chars=300)
         genres = [genre.id for genre in genres]
         data = json.dumps({
-            "genres": genres,
-            "info": info
+            'genres': genres,
+            'info': info
         })
         res = client.put(f'/api/artist/{artist.id}/', data=data,
-                         content_type="application/json",
+                         content_type='application/json',
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         artist_dict = res.json()
         assert res.status_code == 200
-        assert artist_dict.get("info") == info
-        assert set(artist_dict.get("genres")) == set(genres)
+        assert artist_dict.get('info') == info
+        assert set(artist_dict.get('genres')) == set(genres)
 
     @pytest.mark.parametrize('is_staff', [True])
     def test_update_all(self, client, artist, genres, user, token):
@@ -87,15 +89,15 @@ class TestArtists:
         genres = [genre.id for genre in genres]
         info = faker.Faker().pystr(min_chars=20, max_chars=300)
         data = json.dumps({
-            "stage_name": stage_name,
-            "genres": genres,
-            "info": info
+            'stageName': stage_name,
+            'genres': genres,
+            'info': info
         })
         res = client.put(f'/api/artist/{artist.id}/', data=data,
-                         content_type="application/json",
+                         content_type='application/json',
                          **{'HTTP_AUTHORIZATION': 'Token ' + str(token)})
         artist_dict = res.json()
         assert res.status_code == 200
-        assert artist_dict.get("info") == info
-        assert set(artist_dict.get("genres")) == set(genres)
-        assert artist_dict.get("stage_name") == stage_name
+        assert artist_dict.get('info') == info
+        assert set(artist_dict.get('genres')) == set(genres)
+        assert artist_dict.get('stageName') == stage_name

@@ -9,7 +9,7 @@ from utils.upload_file import FileUploaderS3
 @pytest.mark.django_db
 class TestUpload:
 
-    @pytest.mark.parametrize('file_name', ['media/song.mp3'])
+    @pytest.mark.parametrize('file_name', ['test/data/song.mp3', 'test/data/dingo.png'])
     def test_upload_file(self, file_name):
         file_uploader = FileUploaderS3()
         key = file_uploader.upload_file_to_s3(file_name)
@@ -18,7 +18,7 @@ class TestUpload:
 
     @pytest.mark.parametrize('is_staff', [True])
     def test_create_song_with_upload(self, client, artists_for_added, genres,
-                                     keys, token, user):
+                                     keys, token, user, is_staff):
         factory = faker.Faker()
         title = factory.pystr(min_chars=5, max_chars=15)
         explicit = factory.pybool()
