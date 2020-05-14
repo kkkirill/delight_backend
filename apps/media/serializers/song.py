@@ -5,10 +5,12 @@ from apps.likes import mixin_tools as likes_services
 from apps.media.models.song import Song
 from apps.media.serializers.artist import ArtistShortInfoSerializer
 from apps.media.serializers.genre import GenreDetailSerializer
+from apps.user.models import Playlist
 from delight.settings import MY_SONGS_PLAYLIST_NAME
 
 
 class SongDetailSerializer(ModelSerializer):
+    playlists = SerializerMethodField(read_only=True)
     genres = GenreDetailSerializer(many=True,)
     artists = ArtistShortInfoSerializer(many=True,)
     is_fan = SerializerMethodField()
@@ -17,8 +19,16 @@ class SongDetailSerializer(ModelSerializer):
         model = Song
         fields = ('id', 'title', 'duration', 'image', 'file',
                   'listens', 'explicit', 'artists', 'genres',
-                  'total_likes', 'is_fan')
+                  'total_likes', 'is_fan', 'playlists')
         read_only_fields = ('listens', 'duration')
+
+    def get_playlists(self, obj) -> bool:
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            playlists = []
+        else:
+            playlists = obj.playlists.filter(owner=user).values('id', 'name')
+        return playlists
 
     def get_is_fan(self, obj) -> bool:
         user = self.context.get('request').user
