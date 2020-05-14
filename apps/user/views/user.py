@@ -53,7 +53,7 @@ class UserView(LikedMixin, ModelViewSet):
     filterset_fields = ('username', 'email', 'is_staff', 'followers_amount',)
     ordering_fields = '__all__'
     ordering = ('username',)
-    search_fields = ('id',)
+    search_fields = ('id', 'username')
 
     permission_classes = (ActionBasedPermission,)
     action_permissions = {

@@ -28,7 +28,7 @@ class PostView(NestedViewSetMixin,
     }
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     ordering_fields = ('id', 'likes', 'pub_date')
-    search_fields = ('owner__id',)
+    search_fields = ('=owner__id',)
     ordering = ('-pub_date',)
 
     def get_serializer_class(self):

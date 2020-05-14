@@ -80,7 +80,7 @@ class PlaylistView(NestedViewSetMixin,
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     ordering_fields = ('id', 'likes', 'songs_amount')
     ordering = ['id']
-    search_fields = ('id', 'name', 'owner')
+    search_fields = ('=id', '=name', '=owner__id')
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
