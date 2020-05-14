@@ -5,7 +5,6 @@ from apps.likes import mixin_tools as likes_services
 from apps.media.models.song import Song
 from apps.media.serializers.artist import ArtistShortInfoSerializer
 from apps.media.serializers.genre import GenreDetailSerializer
-from apps.user.models import Playlist
 from delight.settings import MY_SONGS_PLAYLIST_NAME
 
 

@@ -67,6 +67,7 @@ from utils.permission_tools import ActionBasedPermission
     }
 ))
 class SongView(LikedMixin, ModelViewSet):
+    queryset = Song.objects.all()
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     filterset_fields = ('genres', 'artists',)
     ordering_fields = ('id', 'listens', 'duration')
@@ -80,11 +81,6 @@ class SongView(LikedMixin, ModelViewSet):
         IsOwnerOrAdmin: ('update', 'destroy'),
         IsAuthenticatedOrReadOnly: ('like', 'fans', 'listen'),
     }
-
-    def get_queryset(self):
-        if self.action in ['retrieve', 'list']:
-            return Song.objects.filter(is_private=False)
-        return Song.objects.all()
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
