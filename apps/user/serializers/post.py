@@ -37,7 +37,7 @@ class SongInPostSerializer(SongShortInfoSerializer):
     artists = ArtistInSongInPostSerializer(many=True,)
 
     class Meta(SongShortInfoSerializer.Meta):
-        fields = ('id', 'file', 'artists')
+        fields = ('id', 'name', 'file', 'artists')
 
 
 class PostShortInfoSerializer(ModelSerializer):

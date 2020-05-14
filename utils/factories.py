@@ -13,6 +13,8 @@ from apps.user.models import Post
 from apps.user.models.playlist import Playlist
 from apps.user.models.user import User
 
+factory.Faker._DEFAULT_LOCALE = 'ru_RU'
+
 GENRES = [
     'Hip - Hop',
     'Reggae',
