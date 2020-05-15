@@ -7,56 +7,40 @@ Installation Docker and its dependencies:
 1) [Install Docker][1]
 2) [Install Docker Compose][2]
 
-Build container:
+Quick start:
 1) Enter project folder.
     ```bash
     cd delight
     # (you should get to the same level with Dockerfile)
     ```
-2) Build container.
+2) Run server.
     ```bash
-    docker-compose build
+    sudo docker-compose up -d --build
     ```
 
     Note:<br>
-    To update pip dependencies, run Django model migrations and start server execute following:
-    ```bash
-    docker-compose -f docker-compose.yaml -f docker-compose.setup.yaml up
-    ```
-    To make migrations and apply them run following:
-    ```bash
-    docker-compose -f docker-compose.yaml -f docker-compose.mkmigrations.yaml up
-    ```
     To show running containers run following:
     ```bash
-    docker[-compose] ps
+    sudo docker ps
     ```
     To stop running containers run following:
     ```bash
-    docker-compose stop
+    sudo docker-compose stop
     ```
 
-3) Before run container run following:
-   <br>Install AWS CLI:
-   ```bash
-   sudo apt install awscli 
-   ```
-   <br>Create AWS bucker:
-   ```bash
-   aws --endpoint-url=http://0.0.0.0:4572 s3 mb s3://delight-media
-   ```
-   <br>Add bucket ACL:
-   ```bash
-   aws --endpoint-url=http://0.0.0.0:4572 s3api put-bucket-acl --bucket delight-media --acl public-read
-   ```
+Run tests:
 
-4) Run container.
+1) Install `make`.
+
     ```bash
-    docker-compose up
+    sudo apt-get install build-essential 
     ```
+2) Run tests.
+
     ```bash
-    docker-compose start
+    sudo make test
     ```
+
 
 [1]: https://docs.docker.com/install/linux/docker-ce/ubuntu/
 [2]: https://docs.docker.com/compose/install/
