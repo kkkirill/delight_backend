@@ -67,7 +67,7 @@ class AlbumView(LikedMixin,
     filterset_fields = ('genres', 'artists')
     ordering_fields = ('id', 'likes', 'songs_amount', 'release_year')
     ordering = ['id']
-    search_fields = ('id', 'title', 'release_year')
+    search_fields = ('=id', '=title', '=release_year')
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {

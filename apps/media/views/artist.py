@@ -66,7 +66,7 @@ class ArtistView(LikedMixin,
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter,)
     filterset_fields = ('genres',)
     ordering_fields = ('id', 'likes')
-    search_fields = ('id', 'stage_name')
+    search_fields = ('=id', '=stage_name')
     http_method_names = ('get', 'post', 'put', 'delete')
     permission_classes = (ActionBasedPermission,)
     action_permissions = {
