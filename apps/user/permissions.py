@@ -20,6 +20,6 @@ class IsOwnerOrAdmin(BasePermission):
 class IsOwnerOrAdminSong(BasePermission):
     def has_permission(self, request, view):
         return (
-            request.user.id == view.kwargs['parent_lookup_user']
+            request.user.id == int(view.kwargs['parent_lookup_user'])
             or request.user.is_staff
         )

@@ -31,7 +31,7 @@ class PlaylistShortInfoSerializer(ModelSerializer):
 
 class PlaylistCUSerializer(ModelSerializer):
     class Meta(PlaylistSerializer.Meta):
-        fields = ('name', 'is_private', 'photo', 'owner')
+        fields = ('id', 'name', 'is_private', 'photo', 'owner')
         validators = [
             UniqueTogetherValidator(
                 queryset=Playlist.objects.all(),
