@@ -17,35 +17,48 @@ services:
       - app_net
     volumes:
       - redis-data:/data
-#  celery:
-#    build: .
-#    env_file: .env
-#    command: celery -A apps.celery worker -l info
-#    volumes:
-#      - .:/code
-#    networks:
-#      - app_net
-#  celery-beat:
-#    env_file: .env
-#    build: .
-#    command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
-#    volumes:
-#      - .:/code
-#    networks:
-#      - app_net
-  web:
+  celery:
     build: .
+    env_file: .env
+    command: celery -A apps.celery worker -l info
+    volumes:
+      - .:/code
+    networks:
+      - app_net
+  celery-beat:
+    env_file: .env
+    build: .
+    command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
+    volumes:
+      - .:/code
+    networks:
+      - app_net
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file: .env
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
-      - "80:8000"
+      - "8000:8000"
     depends_on:
       - db
       - redis
-#      - celery
-#      - celery-beat
+      - celery
+      - celery-beat
+    networks:
+      - app_net
+  front:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    command: npm start
+    ports:
+      - "4000:4000"
+    depends_on:
+      - web
     networks:
       - app_net
 

@@ -56,6 +56,7 @@ class PostCUSerializer(ModelSerializer):
 
     class Meta(PostSerializer.Meta):
         fields = ('owner', 'text', 'images', 'songs', 'playlists', 'albums',)
+        extra_kwargs = {'images': {'required': False}}
 
     def get_fields(self, *args, **kwargs):
         fields = super(PostCUSerializer, self).get_fields()

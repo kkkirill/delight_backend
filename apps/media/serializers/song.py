@@ -43,6 +43,7 @@ class SongCUSerializer(ModelSerializer):
     class Meta(SongDetailSerializer.Meta):
         fields = ('id', 'title', 'image', 'file',
                   'explicit', 'artists', 'genres')
+        extra_kwargs = {'image': {'required': False}}
 
     def get_fields(self, *args, **kwargs):
         fields = super(SongCUSerializer, self).get_fields()

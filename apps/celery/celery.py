@@ -12,6 +12,6 @@ app.autodiscover_tasks(packages=settings.INSTALLED_APPS)
 app.conf.beat_schedule = {
     'aggregate_listen_info': {
         'task': 'aggregate_listen_info',
-        'schedule': crontab(minute='*/1')
+        'schedule': crontab(minute=0, hour=0)
     }
 }
