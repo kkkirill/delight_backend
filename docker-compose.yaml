@@ -50,17 +50,6 @@ services:
       - celery-beat
     networks:
       - app_net
-  front:
-    build:
-      context: frontend
-      dockerfile: Dockerfile
-    command: npm start
-    ports:
-      - "4000:4000"
-    depends_on:
-      - web
-    networks:
-      - app_net
 
 networks:
   app_net:
