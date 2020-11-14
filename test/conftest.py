@@ -3,6 +3,7 @@ from django_redis import get_redis_connection
 from rest_auth.app_settings import TokenSerializer, create_token
 from rest_auth.models import TokenModel
 
+from delight.settings import MY_SONGS_PLAYLIST_NAME, FAVORITES_PLAYLIST_NAME
 from utils.factories import (
     AlbumFactory, ArtistFactory, GenreFactory, PlaylistFactory, SongFactory,
     UserFactory)
@@ -22,8 +23,8 @@ def is_staff():
 @pytest.fixture
 def user(is_staff):
     user = UserFactory.create(is_staff=is_staff)
-    PlaylistFactory.create(name='Favorites', is_private=True, owner=user)
-    PlaylistFactory.create(name='My Songs', is_private=True, owner=user)
+    PlaylistFactory.create(name=FAVORITES_PLAYLIST_NAME, is_private=True, owner=user)
+    PlaylistFactory.create(name=MY_SONGS_PLAYLIST_NAME, is_private=True, owner=user)
     return user
 
 
