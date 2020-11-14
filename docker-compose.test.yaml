@@ -15,9 +15,9 @@ services:
       - SERVICES=s3
       - DEBUG=1
       - DATA_DIR=/tmp/localstack/data
-      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DOCKER_HOST=unix:///var/run/docker.sock.s
     volumes:
-      - ./utils/bucket_create.sh:/utils/bucket_create.sh
+      - ./test/helpers/:/docker-entrypoint-initaws.d
       - .localstack:/tmp/localstack
     networks:
       - app_net

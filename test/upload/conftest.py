@@ -1,6 +1,6 @@
 import pytest
 
-from utils.upload_file import FileUploaderS3
+from test.helpers.upload_file import FileUploaderS3
 
 
 @pytest.fixture

@@ -3,7 +3,7 @@ import json
 import faker
 import pytest
 
-from utils.upload_file import FileUploaderS3
+from test.helpers.upload_file import FileUploaderS3
 
 
 @pytest.mark.django_db

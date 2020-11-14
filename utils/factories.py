@@ -12,6 +12,7 @@ from apps.media.models.song import Song
 from apps.user.models import Post
 from apps.user.models.playlist import Playlist
 from apps.user.models.user import User
+from delight.settings import FAVORITES_PLAYLIST_NAME, MY_SONGS_PLAYLIST_NAME
 
 factory.Faker._DEFAULT_LOCALE = 'ru_RU'
 
@@ -164,7 +165,7 @@ class PlaylistFactory(factory.django.DjangoModelFactory):
 class PostFactory(factory.django.DjangoModelFactory):
     owner = factory.SubFactory(UserFactory)
     text = factory.Faker('pystr', min_chars=5, max_chars=50)
-    images = [factory.Faker('image_url').generate() for i in range(randint(1, 11))]
+    images = [factory.Faker('image_url') for i in range(randint(1, 11))]
     pub_date = factory.Faker('date_time')
 
     class Meta:
@@ -308,8 +309,8 @@ def fill(amount=50):
         user = UserFactory.create(
             followers=fill_with_data(users, 0, len(users) // 5)
         )
-        PlaylistFactory.create(name='Favorites', is_private=True, owner=user)
-        PlaylistFactory.create(name='My Songs', is_private=True, owner=user)
+        PlaylistFactory.create(name=FAVORITES_PLAYLIST_NAME, is_private=True, owner=user)
+        PlaylistFactory.create(name=MY_SONGS_PLAYLIST_NAME, is_private=True, owner=user)
         # creating playlists and likes for user
         for _ in range(amount // 10):
             PlaylistFactory.create(

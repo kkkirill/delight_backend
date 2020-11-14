@@ -8,7 +8,7 @@ build_test:
 	@docker-compose \
 		-f docker-compose.yaml \
 		-f docker-compose.test.yaml \
-		build web
+		build --parallel web
 
 .PHONY: test
 test: build_test
@@ -16,3 +16,15 @@ test: build_test
 		-f docker-compose.yaml \
 		-f docker-compose.test.yaml \
 		run web dockerize -timeout 20s -wait tcp://db:5432 bash -c "test/test.sh"
+
+run:
+	@docker-compose up
+
+run+rebuild:
+	@docker-compose up --build
+
+clear_all:
+	@docker-compose \
+		-f docker-compose.yaml \
+		-f docker-compose.test.yaml \
+		down -v
