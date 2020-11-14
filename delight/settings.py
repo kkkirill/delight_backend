@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'delight.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'delight',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'db',
