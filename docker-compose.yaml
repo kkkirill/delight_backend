@@ -34,6 +34,26 @@ services:
       - .:/code
     networks:
       - app_net
+  elasticsearch:
+    image: elasticsearch:7.9.3
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+
+#      - node.name=es
+#      - cluster.name=es-docker-cluster
+#      - discovery.type=single-node
+#      - discovery.seed_hosts=es02,es03
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+    networks:
+      - app_net
   web:
     build:
       context: .
@@ -49,6 +69,7 @@ services:
       - redis
       - celery
       - celery-beat
+      - elasticsearch
     networks:
       - app_net
 

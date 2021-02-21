@@ -15,16 +15,30 @@ test: build_test
 	@docker-compose \
 		-f docker-compose.yaml \
 		-f docker-compose.test.yaml \
-		run web dockerize -timeout 20s -wait tcp://db:5432 bash -c "test/test.sh"
+		run web
 
 run:
 	@docker-compose up
 
-run+rebuild:
+run_rebuild:
 	@docker-compose up --build
+
+exec:
+	@docker-compose -f docker-compose.yaml exec web $(cmd)
+
+migrate: cmd=python manage.py migrate
+migrate: exec
+
+fake_data: cmd=python manage.py fake_data
+fake_data: exec
 
 clear_all:
 	@docker-compose \
 		-f docker-compose.yaml \
 		-f docker-compose.test.yaml \
 		down -v
+
+fix:
+	poetry run black .
+	poetry run pylama
+	poetry run isort --recursive .
