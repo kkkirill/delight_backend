@@ -102,7 +102,10 @@ class PlaylistView(NestedViewSetMixin,
 
         user_id = int(self.kwargs['parent_lookup_user_playlists'])
         if user_id == -1:
-            return Playlist.objects.filter(is_private=False).order_by('-total_likes')
+            # TODO order_by and count now don't work
+            from django.db.models import Count
+            return Playlist.objects.filter(is_private=False).annotate(like_count=Count('likes')).order_by('-like_count')
+            # return Playlist.objects.filter(is_private=False).order_by('-total_likes')
         if self.request.user.is_staff:
             return Playlist.objects.all()
         if self.request.user.id == user_id:

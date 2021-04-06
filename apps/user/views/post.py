@@ -1,6 +1,6 @@
 from itertools import chain
 
-from django.db.models import Q
+from django.db.models import Q, Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
@@ -53,7 +53,8 @@ class PostView(NestedViewSetMixin,
 
         user_id = int(self.kwargs['parent_lookup_user'])
         if user_id == -1:
-            posts = Post.objects.all().order_by('-total_likes')
+            posts = Post.objects.annotate(like_count=Count('likes')).order_by('-like_count')
+            # posts = Post.objects.all().order_by('-total_likes')
         elif self.request.user.is_anonymous:
             posts = Post.objects.filter(owner_id=user_id)
         else:

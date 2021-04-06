@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'storages',
     'corsheaders',
+    'haystack',
     # project apps
     'apps.user',
     'apps.media',
@@ -206,6 +207,24 @@ MEDIA_URL = '/media/'
 MAX_FILE_SIZES = {
     'audio': 20 * 1024 * 1024,
     'image': 3 * 1024 * 1024
+}
+
+HAYSTACK_CONNECTIONS = {
+    'albums': {
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        'URL': 'http://haystack:9200/',
+        'INDEX_NAME': 'albums',
+    },
+    'songs': {
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        'URL': 'http://haystack:9200/',
+        'INDEX_NAME': 'songs',
+    },
+    'artists': {
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        'URL': 'http://haystack:9200/',
+        'INDEX_NAME': 'artists',
+    },
 }
 
 # CORS

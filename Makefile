@@ -21,7 +21,7 @@ run:
 	@docker-compose up
 
 run_rebuild:
-	@docker-compose up --build
+	@docker-compose build --parallel
 
 exec:
 	@docker-compose -f docker-compose.yaml exec web $(cmd)

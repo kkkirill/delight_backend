@@ -33,9 +33,10 @@ ARG TEST
 ENV IS_TEST=$TEST
 COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 RUN pip install --no-cache-dir -r $PYSETUP_PATH/requirements.txt
+COPY entrypoint.sh /entrypoint.sh
 WORKDIR /app
 COPY . /app/
 
 
-RUN ["chmod", "+x", "entrypoint.sh"]
-ENTRYPOINT ["entrypoint.sh", "$IS_TEST"]
+RUN ["chmod", "+x", "/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh", "$IS_TEST"]
