@@ -1,0 +1,93 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13
+    env_file: .env
+    user: "1000:1000"
+    ports:
+      - "5432:5432"
+
+#    restart: "no"
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+  redis:
+    image: redis:6.0.9
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    networks:
+      - app_net
+    volumes:
+      - redis-data:/data
+  celery:
+    build: .
+    env_file: .env
+    command: celery -A apps.celery worker -l info
+    volumes:
+      - .:/code
+    networks:
+      - app_net
+  celery-beat:
+    env_file: .env
+    build: .
+    command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
+    volumes:
+      - .:/code
+    networks:
+      - app_net
+  elasticsearch:
+    image: elasticsearch:7.9.3
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+
+#      - node.name=es
+#      - cluster.name=es-docker-cluster
+#      - discovery.type=single-node
+#      - discovery.seed_hosts=es02,es03
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+    networks:
+      - app_net
+  web:
+    image: delight:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    command: >
+      bash -c "python manage.py migrate &&
+               python manage.py search_index --rebuild --parallel -f &&
+               python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      - celery
+      - celery-beat
+      - elasticsearch
+    networks:
+      - app_net
+
+networks:
+  app_net:
+
+volumes:
+  redis-data:
