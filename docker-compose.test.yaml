@@ -3,13 +3,11 @@ version: '3'
 services:
   db:
     ports: []
-    user: "1000:1000"
-    networks:
-      - app_net
   localstack:
     image: localstack/localstack:latest
     env_file: .env
     ports:
+      - "4566:4566"
       - "4571:4571"
       - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
     environment:
@@ -18,10 +16,8 @@ services:
       - DATA_DIR=/tmp/localstack/data
       - DOCKER_HOST=unix:///var/run/docker.sock.s
     volumes:
-      - ./test/helpers/:/docker-entrypoint-initaws.d
+      - ./test/helpers/s3.sh:/docker-entrypoint-initaws.d/s3.sh
       - .localstack:/tmp/localstack
-    networks:
-      - app_net
   web:
     image: delight:latest
     build:
@@ -34,9 +30,3 @@ services:
     depends_on:
       - db
       - localstack
-    networks:
-      - app_net
-
-networks:
-  app_net:
-    driver: bridge

@@ -16,15 +16,11 @@ ENV PYTHONUNBUFFERED=1 \
     VENV_PATH="/opt/pysetup/.venv"
 
 FROM base as builder
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        curl \
-        build-essential
-#RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python - --version $POETRY_VERSION
 RUN pip install poetry==$POETRY_VERSION
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 RUN poetry export -f requirements.txt -o $PYSETUP_PATH/requirements.txt --without-hashes
+RUN poetry export -f requirements.txt -o $PYSETUP_PATH/requirements_test.txt --without-hashes --dev
 
 
 FROM python:3.8-slim as app
@@ -33,6 +29,11 @@ ARG TEST
 ENV IS_TEST=$TEST
 COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 RUN pip install --no-cache-dir -r $PYSETUP_PATH/requirements.txt
+RUN if [ $TEST ]; then \
+    apt-get update \
+    && apt-get install --no-install-recommends -y apt-utils netcat curl \
+    && pip install --no-cache-dir -r $PYSETUP_PATH/requirements_test.txt; \
+    fi
 COPY entrypoint.sh /entrypoint.sh
 WORKDIR /app
 COPY . /app/

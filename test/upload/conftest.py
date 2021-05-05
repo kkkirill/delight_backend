@@ -11,4 +11,4 @@ def keys():
     yield {'ikey': ikey, 'fkey': fkey}
     file_uploader.delete_file(ikey)
     file_uploader.delete_file(fkey)
-    open('.localstack/data/s3_api_calls.json', 'w').close()
+    open('.localstack/data/recorded_api_calls.json', 'w').close()

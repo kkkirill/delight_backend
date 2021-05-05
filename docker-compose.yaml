@@ -16,33 +16,27 @@ services:
 #      retries: 5
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
-    networks:
-      - app_net
   redis:
     image: redis:6.0.9
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6379:6379"
-    networks:
-      - app_net
     volumes:
       - redis-data:/data
   celery:
+    image: delight:latest
     build: .
     env_file: .env
     command: celery -A apps.celery worker -l info
     volumes:
       - .:/code
-    networks:
-      - app_net
   celery-beat:
+    image: delight:latest
     env_file: .env
     build: .
     command: celery -A apps.celery beat -l info --pidfile=./celeryd.pid
     volumes:
       - .:/code
-    networks:
-      - app_net
   elasticsearch:
     image: elasticsearch:7.9.3
     environment:
@@ -61,8 +55,6 @@ services:
         hard: -1
     ports:
       - 9200:9200
-    networks:
-      - app_net
   web:
     image: delight:latest
     build:
@@ -83,11 +75,6 @@ services:
       - celery
       - celery-beat
       - elasticsearch
-    networks:
-      - app_net
-
-networks:
-  app_net:
 
 volumes:
   redis-data:
