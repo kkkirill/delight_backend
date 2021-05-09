@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'storages',
     'corsheaders',
-    'haystack',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
     # project apps
     'apps.user',
     'apps.media',
@@ -209,22 +210,18 @@ MAX_FILE_SIZES = {
     'image': 3 * 1024 * 1024
 }
 
-HAYSTACK_CONNECTIONS = {
-    'albums': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': 'http://haystack:9200/',
-        'INDEX_NAME': 'albums',
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'elasticsearch:9200'
     },
-    'songs': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': 'http://haystack:9200/',
-        'INDEX_NAME': 'songs',
-    },
-    'artists': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': 'http://haystack:9200/',
-        'INDEX_NAME': 'artists',
-    },
+}
+
+ELASTICSEARCH_INDEX_NAMES = {
+    'apps.search.documents.album': 'albums',
+    'apps.search.documents.artist': 'artists',
+    'apps.search.documents.song': 'songs',
+    'apps.search.documents.user': 'users',
+    'apps.search.documents.playlist': 'playlists',
 }
 
 # CORS

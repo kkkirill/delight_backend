@@ -1,3 +1,4 @@
+from django.conf import settings
 from django_elasticsearch_dsl import (
     Document,
     fields,
@@ -11,18 +12,11 @@ Song = get_model('media', 'Song')
 
 @registry.register_document
 class SongDocument(Document):
-    id = fields.IntegerField(attr='id')
     title = fields.CompletionField(
         attr='title',
         fields={
             'suggest': fields.Completion(),
         }
-    )
-    image = fields.TextField(
-        attr='image'
-    )
-    file = fields.TextField(
-        attr='file'
     )
     artists = fields.NestedField(
         attr='artists',
@@ -32,32 +26,24 @@ class SongDocument(Document):
         },
         multi=True
     )
-    genres = fields.NestedField(
-        attr='genres',
-        properties={
-            'name': fields.TextField(attr='name'),
-        },
-        multi=True
-    )
 
     class Meta:
         doc_type = 'song_document'
 
     class Index:
-        name = 'songs'
+        name = settings.ELASTICSEARCH_INDEX_NAMES[__name__]
         doc_type = 'song_document'
 
     class Django:
         model = Song
         fields = [
+            'id',
             'image',
-            'explicit'
         ]
         related_models = [Artist]
 
-    # def get_queryset(self):
-    #     return super().get_queryset().prefetch_related('artists').only('artists__id', 'artists__stage_name', 'id', 'title')
-    #
-    # def get_instances_from_related(self, related_instance):
-    #     if isinstance(related_instance, Artist):
-    #         return related_instance.songs.all()
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('artists') # .only('artists__id', 'artists__stage_name', 'id', 'title')
+
+    def get_instances_from_related(self, related_instance):
+        return related_instance.songs.all()

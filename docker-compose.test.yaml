@@ -19,7 +19,7 @@ services:
       - ./test/helpers/s3.sh:/docker-entrypoint-initaws.d/s3.sh
       - .localstack:/tmp/localstack
   web:
-    image: delight:latest
+    image: delight-test:latest
     build:
       context: .
       dockerfile: Dockerfile
